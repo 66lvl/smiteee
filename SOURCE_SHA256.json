@@ -1,0 +1,10 @@
+{
+  "ui/theme.h": "a659ae03409848aaa330300cb14ff5515730cf9582159c748142c87cfcf5347f",
+  "ui/theme.cpp": "49ee5dadb30fb7d788c3c58668888fdc848b9f22c5a7ad4625510823eb235b15",
+  "ui/menu.cpp": "612d908c5d7795d8fbac3dde05b7ffd1910f2404e39238142d8edf78bcc95092",
+  "features/config.h": "516b4725fb8ecaf8e660cd64983ae9a51360c0004df1ca400fcba2b29ef50fd2",
+  "features/config.cpp": "854661dc68e972569a748ff5796af02a752e8d4c1df85c5600ebae38871c66df",
+  "features/death_camera.cpp": "88b626a7a0afd3ce23954c3e8f1eb93e014b0780caf1aa00a5ca0652b6a741fd",
+  "features/auto_pick.cpp": "cb3851302d3fc1ee8639e460a7934b7a4a51995e6ee5b92033c065509629c7be",
+  "core/dll_main.cpp": "01229351717015008d0eeb67c9ff626ce572d8a4f5d74ffa8327f137e3c591bf"
+}

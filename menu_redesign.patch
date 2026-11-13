@@ -1,0 +1,1120 @@
+--- a/ui/menu.cpp
++++ b/ui/menu.cpp
+@@ -130,98 +130,84 @@
+     // Static previews use only ImDrawList primitives. No SDK queries, meshes or asset loading.
+     static void DrawPreview(bool combat)
+     {
+-        UITheme::BeginCard(combat?"aim_preview":"esp_preview",combat?UITheme::Icon::Target:UITheme::Icon::Visuals,
+-                           combat?"TARGETING PREVIEW":"OVERLAY PREVIEW",nullptr,556.f);
+-        UITheme::InfoText("MOCKUP / no live game data");ImGui::Separator();
+-        const ImVec2 p=ImGui::GetCursorScreenPos();const float w=ImGui::GetContentRegionAvail().x,h=S(374.f);
+-        auto* dl=ImGui::GetWindowDrawList();const ImVec2 c={p.x+w*.5f,p.y+S(187.f)};
+-        const auto accent=UITheme::ToU32(UITheme::palette.accent),line=UITheme::ToU32(UITheme::palette.lineSoft);
++        UITheme::BeginCard(combat?"aim_preview":"esp_preview",UITheme::Icon::Visuals,
++                           combat?"Targeting preview":"Overlay preview",nullptr,334.f);
++        const ImVec2 p=ImGui::GetCursorScreenPos();
++        const float w=ImGui::GetContentRegionAvail().x,h=S(246.f);
++        auto* dl=ImGui::GetWindowDrawList();
++        const ImU32 grid=IM_COL32(35,46,60,90),ink=UITheme::ToU32(UITheme::palette.textDim);
++        const ImU32 accent=UITheme::ToU32(UITheme::palette.accent);
++        if(UITheme::fontSmall)ImGui::PushFont(UITheme::fontSmall);
++        dl->AddText({p.x+w-ImGui::CalcTextSize("Static").x,p.y-S(34.f)},ink,"Static");
++        if(UITheme::fontSmall)ImGui::PopFont();
++        dl->AddRectFilled(p,{p.x+w,p.y+h},IM_COL32(17,25,34,255),S(6.f));
++        dl->AddRect(p,{p.x+w,p.y+h},UITheme::ToU32(UITheme::palette.borderHi),S(6.f));
++        for(float x=S(22.f);x<w;x+=S(22.f))dl->AddLine({p.x+x,p.y+S(1.f)},{p.x+x,p.y+h-S(1.f)},grid);
++        for(float y=S(22.f);y<h;y+=S(22.f))dl->AddLine({p.x+S(1.f),p.y+y},{p.x+w-S(1.f),p.y+y},grid);
++        const ImVec2 c={p.x+w*.5f,p.y+h*.5f};
+         if(combat){
+-            const float r=fminf(w*.43f,S(110.f));
+-            for(int i=0;i<40;i++){const float a=i*6.2831853f/40.f,b=a+.06f;dl->AddLine({c.x+cosf(a)*r,c.y+sinf(a)*r},{c.x+cosf(b)*r,c.y+sinf(b)*r},accent,S(1.f));}
+-            dl->AddCircle(c,r*.62f,line,48);dl->AddCircle(c,r*.31f,line,40);
+-            for(int side=-1;side<=1;side+=2){dl->AddLine({c.x+side*r*.95f,c.y},{c.x+side*r*1.15f,c.y},line);dl->AddLine({c.x,c.y+side*r*.95f},{c.x,c.y+side*r*1.15f},line);}
+-            dl->AddLine({c.x-S(12.f),c.y},{c.x-S(4.f),c.y},UITheme::ToU32(UITheme::palette.text));
+-            dl->AddLine({c.x+S(4.f),c.y},{c.x+S(12.f),c.y},UITheme::ToU32(UITheme::palette.text));
+-            dl->AddLine({c.x,c.y-S(12.f)},{c.x,c.y-S(4.f)},UITheme::ToU32(UITheme::palette.text));
+-            dl->AddLine({c.x,c.y+S(4.f)},{c.x,c.y+S(12.f)},UITheme::ToU32(UITheme::palette.text));
+-            const ImVec2 t={c.x+r*.47f,c.y-r*.46f};dl->AddCircle(t,S(18.f),UITheme::ToU32(UITheme::palette.danger));dl->AddCircleFilled(t,S(4.f),UITheme::ToU32(UITheme::palette.danger));
+-            for(int i=1;i<8;i++){const float f=i/8.f;dl->AddCircleFilled({c.x+(t.x-c.x)*f,c.y+(t.y-c.y)*f},S(1.f),accent);}
++            const float r=fminf(w*.37f,S(83.f));
++            dl->AddCircle(c,r,accent,64,S(1.f));dl->AddCircle(c,r*.62f,grid,48);
++            dl->AddLine({c.x-S(12.f),c.y},{c.x+S(12.f),c.y},ink,S(1.f));
++            dl->AddLine({c.x,c.y-S(12.f)},{c.x,c.y+S(12.f)},ink,S(1.f));
++            const ImVec2 t={c.x+r*.5f,c.y-r*.4f};dl->AddCircle(t,S(9.f),accent,24,S(1.5f));
+         }else{
+-            const float bx=c.x-S(70.f),by=p.y+S(42.f),bw=S(140.f),bh=S(260.f);
+-            const ImU32 body=IM_COL32(102,117,143,255),light=IM_COL32(121,135,159,255),dark=IM_COL32(74,89,113,255);
+-            const auto pt=[&](float x,float y){return ImVec2(c.x+S(x),by+S(y));};
+-            dl->AddEllipseFilled(pt(0,274),{S(53.f),S(7.f)},IM_COL32(5,12,26,150));
+-            const ImVec2 head[]={pt(-15,23),pt(15,20),pt(28,40),pt(17,67),pt(1,80),pt(-18,64),pt(-23,42)};
+-            dl->AddConvexPolyFilled(head,7,light);
+-            dl->AddQuadFilled(pt(-18,41),pt(20,39),pt(14,52),pt(-14,53),IM_COL32(23,35,55,255));
+-            dl->AddQuadFilled(pt(-18,70),pt(19,70),pt(34,163),pt(-27,163),body);
+-            dl->AddTriangleFilled(pt(-18,70),pt(1,91),pt(19,70),dark);
+-            dl->AddQuadFilled(pt(-23,78),pt(-46,100),pt(-65,159),pt(-51,166),body);
+-            dl->AddQuadFilled(pt(24,78),pt(48,101),pt(65,160),pt(51,167),body);
+-            dl->AddQuadFilled(pt(-25,163),pt(-2,166),pt(-20,260),pt(-39,256),dark);
+-            dl->AddQuadFilled(pt(1,166),pt(31,163),pt(39,256),pt(20,260),dark);
+-            dl->AddLine(pt(-11,173),pt(-15,199),light);dl->AddLine(pt(17,173),pt(21,199),light);
+-            const auto box=ImGui::GetColorU32(ImVec4(ESP::cfg.EnemyColor.r,ESP::cfg.EnemyColor.g,ESP::cfg.EnemyColor.b,ESP::cfg.EnemyColor.a));
+-            if(ESP::cfg.ShowBox){if(ESP::cfg.BoxMode==ESP::BoxStyle::Corners){for(int x=0;x<2;x++)for(int y=0;y<2;y++){const ImVec2 q={bx+x*bw,by+y*bh};dl->AddLine(q,{q.x+(x?-S(16.f):S(16.f)),q.y},box,ESP::cfg.BoxThickness);dl->AddLine(q,{q.x,q.y+(y?-S(16.f):S(16.f))},box,ESP::cfg.BoxThickness);}}else dl->AddRect({bx,by},{bx+bw,by+bh},box,0.f,0,ESP::cfg.BoxThickness);}
+-            if(ESP::cfg.ShowHealthBar){dl->AddLine({bx-S(10.f),by},{bx-S(10.f),by+bh},line,S(3.f));dl->AddLine({bx-S(10.f),by+bh*.3f},{bx-S(10.f),by+bh},UITheme::ToU32(UITheme::palette.success),S(3.f));}
+-            if(ESP::cfg.ShowName)dl->AddText({bx,by-S(25.f)},UITheme::ToU32(UITheme::palette.text),"Enemy God");
+-            if(ESP::cfg.ShowLevel)dl->AddText({bx+bw-S(36.f),by-S(25.f)},UITheme::ToU32(UITheme::palette.textDim),"Lv.12");
+-            if(ESP::cfg.ShowDistance)dl->AddText({c.x-S(17.f),by+bh+S(16.f)},UITheme::ToU32(UITheme::palette.textDim),"24 m");
+-        }
+-        ImGui::Dummy({w,h});UITheme::InfoText(combat?"Illustration only. No live targets or game telemetry.":"Character placeholder. Layout and colors only.");
+-        ImGui::Dummy({0.f,S(12.f)});ImGui::Separator();ImGui::Spacing();
+-        if(combat){
+-            if(ImGui::BeginTable("preview_stats",2,ImGuiTableFlags_SizingStretchSame)){
+-                ImGui::TableNextColumn();ImGui::Text("%.0f deg",Aimbot::cfg.FovDeg);UITheme::InfoText("Field of view");
+-                ImGui::TableNextColumn();UITheme::InfoText("Hold binding");UITheme::InfoText("See Activation");ImGui::EndTable();
++            const float top=p.y+S(46.f),bottom=p.y+S(201.f),half=fminf(w*.22f,S(60.f));
++            for(int x=0;x<2;x++)for(int y=0;y<2;y++){
++                const ImVec2 q={c.x+(x?half:-half),y?bottom:top};
++                dl->AddLine(q,{q.x+(x?-S(15.f):S(15.f)),q.y},accent,S(2.f));
++                dl->AddLine(q,{q.x,q.y+(y?-S(12.f):S(12.f))},accent,S(2.f));
+             }
+-        }else{UITheme::InfoText("Enemy  /  preview only");}
+-        UITheme::EndCard();
+-    }
+-
+-    static void DrawQuickColors()
+-    {
+-        UITheme::BeginCard("quick_palette",UITheme::Icon::Palette,"Color palette");
+-        ESP::Color4* colors[]={&ESP::cfg.EnemyColor,&ESP::cfg.AllyColor,&ESP::cfg.HealthColor,&ESP::cfg.TextColor};
+-        const char* labels[]={"Enemy","Ally","Health","Text"};
+-        if(ImGui::BeginTable("quick_colors",4,ImGuiTableFlags_SizingStretchSame)){
+-            for(int i=0;i<4;i++){ImGui::TableNextColumn();ImGui::PushID(i);auto& color=*colors[i];float v[]={color.r,color.g,color.b,color.a};
+-                ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding,S(20.f));
+-                if(ImGui::ColorEdit4("##color",v,ImGuiColorEditFlags_NoInputs|ImGuiColorEditFlags_NoLabel|ImGuiColorEditFlags_AlphaBar))color={v[0],v[1],v[2],v[3]};
+-                ImGui::PopStyleVar();UITheme::HelpLastItem(labels[i],"Change this overlay color. More colors are available in the Colors tab.");UITheme::InfoText(labels[i]);ImGui::PopID();
+-            }ImGui::EndTable();
+-        }
+-        UITheme::EndCard();
++            dl->AddLine({c.x-half-S(9.f),top},{c.x-half-S(9.f),bottom},UITheme::ToU32(UITheme::palette.success),S(3.f));
++            const float head=p.y+S(72.f),neck=head+S(14.f),hip=p.y+S(144.f);
++            dl->AddCircle({c.x,head},S(12.f),ink,28,S(1.8f));
++            dl->AddLine({c.x,neck},{c.x,hip},ink,S(1.8f));
++            dl->AddLine({c.x,p.y+S(104.f)},{c.x-S(30.f),p.y+S(130.f)},ink,S(1.8f));
++            dl->AddLine({c.x,p.y+S(104.f)},{c.x+S(30.f),p.y+S(130.f)},ink,S(1.8f));
++            dl->AddLine({c.x,hip},{c.x-S(22.f),p.y+S(182.f)},ink,S(1.8f));
++            dl->AddLine({c.x,hip},{c.x+S(22.f),p.y+S(182.f)},ink,S(1.8f));
++        }
++        if(UITheme::fontSmall)ImGui::PushFont(UITheme::fontSmall);
++        const char* label=combat?"Preview target":"Preview target";
++        const float tw=ImGui::CalcTextSize(label).x;
++        dl->AddText({c.x-tw*.5f,p.y+S(20.f)},UITheme::ToU32(UITheme::palette.text),label);
++        const char* caption="Static layout preview";
++        dl->AddText({c.x-ImGui::CalcTextSize(caption).x*.5f,p.y+h-S(30.f)},ink,caption);
++        if(UITheme::fontSmall)ImGui::PopFont();
++        ImGui::Dummy({w,h});UITheme::EndCard();
+     }
+ 
+     static void DrawThemeTiles()
+     {
+-        UITheme::BeginCard("theme_studio",UITheme::Icon::Palette,"Theme studio",nullptr,210.f);
++        UITheme::BeginCard("theme_studio",UITheme::Icon::Palette,"Theme studio");
+         const char* names[]={"Midnight","Violet","Ocean","Graphite"};const int ids[]={4,1,0,3};
+-        const ImU32 accents[]={IM_COL32(138,167,255,255),IM_COL32(183,162,255,255),IM_COL32(115,173,243,255),IM_COL32(192,201,208,255)};
+-        const float gap=S(12.f);const bool tilesWide=ImGui::GetContentRegionAvail().x>=S(640.f);
+-        const float w=tilesWide?(ImGui::GetContentRegionAvail().x-gap*3.f)/4.f:ImGui::GetContentRegionAvail().x;
+-        for(int i=0;i<4;i++){
+-            if(i&&tilesWide)ImGui::SameLine(0,gap);ImGui::PushID(i);
+-            const ImVec2 p=ImGui::GetCursorScreenPos();const bool active=UITheme::appearance.Preset==ids[i];
+-            if(ImGui::InvisibleButton("theme",{w,S(126.f)}))UITheme::ApplyAppearancePreset(ids[i]);
+-            auto* dl=ImGui::GetWindowDrawList();
+-            dl->AddRectFilled(p,{p.x+w,p.y+S(126.f)},IM_COL32(22,27,42,255),S(8.f));
+-            dl->AddRect(p,{p.x+w,p.y+S(126.f)},active?ImGui::GetColorU32(UITheme::palette.accent):ImGui::GetColorU32(UITheme::palette.border),S(8.f));
+-            dl->AddRectFilled({p.x+S(7.f),p.y+S(8.f)},{p.x+S(24.f),p.y+S(94.f)},IM_COL32(48,45,68,255),S(4.f));
+-            for(int j=0;j<4;j++)dl->AddRectFilled({p.x+S(12.f),p.y+S(17.f)+static_cast<float>(j)*S(13.f)},{p.x+S(19.f),p.y+S(20.f)+static_cast<float>(j)*S(13.f)},j==1?accents[i]:IM_COL32(84,84,105,255),1.f);
+-            const float cw=(w-S(42.f))*.5f;
+-            for(int j=0;j<2;j++){
+-                const float x=p.x+S(31.f)+static_cast<float>(j)*(cw+S(5.f));
+-                dl->AddRectFilled({x,p.y+S(30.f)},{x+cw,p.y+S(86.f)},IM_COL32(47,50,72,255),S(4.f));
+-                dl->AddLine({x+S(7.f),p.y+S(44.f)},{x+cw-S(7.f),p.y+S(44.f)},IM_COL32(87,90,111,255),S(3.f));
+-                dl->AddLine({x+S(7.f),p.y+S(61.f)},{x+cw*.65f,p.y+S(61.f)},accents[i],S(3.f));
++        const ImU32 accents[]={IM_COL32(169,194,242,255),IM_COL32(183,162,255,255),IM_COL32(115,173,243,255),IM_COL32(192,201,208,255)};
++        const float avail=ImGui::GetContentRegionAvail().x;
++        const int columns=avail>=S(720.f)?4:(avail>=S(360.f)?2:1);
++        if(ImGui::BeginTable("theme_tiles",columns,ImGuiTableFlags_SizingStretchSame)){
++            for(int i=0;i<4;i++){
++                ImGui::TableNextColumn();ImGui::PushID(i);
++                const float w=ImGui::GetContentRegionAvail().x,h=S(112.f);
++                const ImVec2 p=ImGui::GetCursorScreenPos();const bool active=UITheme::appearance.Preset==ids[i];
++                if(ImGui::InvisibleButton("##theme",{w,h},ImGuiButtonFlags_EnableNav))UITheme::ApplyAppearancePreset(ids[i]);
++                auto* dl=ImGui::GetWindowDrawList();
++                dl->AddRectFilled(p,{p.x+w,p.y+h},UITheme::ToU32(UITheme::palette.bgDeep),S(6.f));
++                dl->AddRect(p,{p.x+w,p.y+h},active?accents[i]:UITheme::ToU32(UITheme::palette.border),S(6.f));
++                dl->AddRectFilled({p.x+S(8.f),p.y+S(8.f)},{p.x+S(30.f),p.y+S(78.f)},IM_COL32(24,31,40,255),S(3.f));
++                for(int j=0;j<4;j++)dl->AddLine({p.x+S(13.f),p.y+S(20.f+j*12.f)},{p.x+S(25.f),p.y+S(20.f+j*12.f)},j==1?accents[i]:IM_COL32(65,78,96,255),S(2.f));
++                const float cw=(w-S(52.f))*.5f;
++                for(int j=0;j<2;j++){
++                    const float x=p.x+S(38.f)+j*(cw+S(6.f));
++                    dl->AddRectFilled({x,p.y+S(24.f)},{x+cw,p.y+S(78.f)},IM_COL32(28,36,47,255),S(3.f));
++                    dl->AddLine({x+S(6.f),p.y+S(38.f)},{x+cw-S(6.f),p.y+S(38.f)},IM_COL32(71,84,104,255),S(2.f));
++                    dl->AddLine({x+S(6.f),p.y+S(56.f)},{x+cw*.7f,p.y+S(56.f)},accents[i],S(2.f));
++                }
++                dl->AddText({p.x+S(12.f),p.y+S(88.f)},UITheme::ToU32(UITheme::palette.text),names[i]);
++                if(active)dl->AddCircleFilled({p.x+w-S(14.f),p.y+S(96.f)},S(3.f),accents[i]);
++                if(ImGui::IsItemHovered())ImGui::SetTooltip("Apply %s (appearance colors only)",names[i]);
++                ImGui::Dummy({0.f,S(5.f)});ImGui::PopID();
+             }
+-            dl->AddText({p.x+S(11.f),p.y+S(103.f)},ImGui::GetColorU32(UITheme::palette.text),names[i]);
+-            if(active)dl->AddCircleFilled({p.x+w-S(14.f),p.y+S(110.f)},S(3.f),accents[i]);
+-            if(ImGui::IsItemHovered())ImGui::SetTooltip("Apply %s (resets appearance colors only)",names[i]);
+-            ImGui::PopID();
++            ImGui::EndTable();
+         }
+         UITheme::EndCard();
+     }
+@@ -279,8 +265,11 @@
+         default:break;
+         }
+         if(!name)return;
+-        ImGui::Spacing();ImGui::Separator();ImGui::Spacing();
+-        if(UITheme::ActionButton("reset_section",UITheme::Icon::Reset,"Reset this section...",UITheme::palette.textDim,{220.f,34.f}))RequestReset(target,name);
++        const ImVec2 p=ImGui::GetCursorScreenPos();
++        if(ImGui::InvisibleButton("##reset_section",{S(26.f),S(30.f)},ImGuiButtonFlags_EnableNav))RequestReset(target,name);
++        const ImVec4 old=UITheme::palette.accentHi;UITheme::palette.accentHi=UITheme::palette.textDim;
++        UITheme::DrawIcon(ImGui::GetWindowDrawList(),UITheme::Icon::Reset,{p.x+S(13.f),p.y+S(15.f)},S(14.f));
++        UITheme::palette.accentHi=old;
+         UITheme::HelpLastItem("Reset this section","Opens a confirmation with the exact scope. Does not change the saved profile. Camera ownership is restored through the existing module when disabled.");
+     }
+     static void DrawComfortCard()
+@@ -330,32 +319,21 @@
+         if (!ESP::cfg.Enabled) ImGui::BeginDisabled();
+         if (s_section[0] == 0)
+         {
+-        const float width=ImGui::GetContentRegionAvail().x;const bool preview=width>=S(1050.f);
+-        const int columns=preview?3:(width>=S(720.f)?2:1);
++        const float width=ImGui::GetContentRegionAvail().x;const bool preview=width>=S(880.f);
++        const int columns=preview?3:(width>=S(620.f)?2:1);
+         if(ImGui::BeginTable("visual_workspace",columns,ImGuiTableFlags_SizingStretchProp)){
+-            if(preview){ImGui::TableSetupColumn("Targets",ImGuiTableColumnFlags_WidthStretch);ImGui::TableSetupColumn("Display",ImGuiTableColumnFlags_WidthStretch);ImGui::TableSetupColumn("Preview",ImGuiTableColumnFlags_WidthFixed,S(310.f));}
++            if(preview){ImGui::TableSetupColumn("Targets",ImGuiTableColumnFlags_WidthStretch);ImGui::TableSetupColumn("Display",ImGuiTableColumnFlags_WidthStretch);ImGui::TableSetupColumn("Preview",ImGuiTableColumnFlags_WidthFixed,S(316.f));}
+             ImGui::TableNextColumn();
+-        UITheme::BeginCard("esp_targets", UITheme::Icon::Target, "Targets");
++        UITheme::BeginCard("esp_targets", UITheme::Icon::Target, "Targets",nullptr,334.f);
+         UITheme::CheckboxRow("Enemy Gods",   &ESP::cfg.ShowEnemyGods);
+         UITheme::CheckboxRow("Ally Gods",    &ESP::cfg.ShowAllyGods);
+         UITheme::CheckboxRow("Minions",      &ESP::cfg.ShowMinions);
+         UITheme::CheckboxRow("Jungle Camps", &ESP::cfg.ShowJungle);
+-        if (ESP::cfg.ShowJungle)
+-            UITheme::SliderFloatRow("Camp Range", &ESP::cfg.JungleMaxDistance,
+-                                     2000.f, 80000.f, "%.0f UU");
+         UITheme::CheckboxRow("Structures",   &ESP::cfg.ShowStructures);
+         UITheme::CheckboxRow("Wards",        &ESP::cfg.ShowWards);
+-        if (ESP::cfg.ShowWards)
+-        {
+-            ImGui::Indent(16.f);
+-            UITheme::CheckboxRow("Enemy Wards",        &ESP::cfg.ShowEnemyWards);
+-            UITheme::CheckboxRow("Friendly Wards",     &ESP::cfg.ShowFriendlyWards);
+-            UITheme::CheckboxRow("Ward Vision Radius", &ESP::cfg.ShowWardRadius);
+-            ImGui::Unindent(16.f);
+-        }
+-        UITheme::EndCard();
+-            DrawQuickColors();ImGui::TableNextColumn();
+-        UITheme::BeginCard("esp_primary", UITheme::Icon::Layers, "Display elements");
++        UITheme::EndCard();
++            ImGui::TableNextColumn();
++        UITheme::BeginCard("esp_primary", UITheme::Icon::Layers, "Display elements",nullptr,334.f);
+         UITheme::CheckboxRow("Box", &ESP::cfg.ShowBox);
+         UITheme::CheckboxRow("Health Bar", &ESP::cfg.ShowHealthBar);
+         UITheme::CheckboxRow("Name", &ESP::cfg.ShowName);
+@@ -363,24 +341,47 @@
+         UITheme::CheckboxRow("Skeleton", &ESP::cfg.ShowSkeleton);
+         UITheme::CheckboxRow("Ability Cooldowns", &ESP::cfg.ShowAbilityCooldowns);
+         UITheme::EndCard();
+-            UITheme::BeginCard("esp_style",UITheme::Icon::Spark,"Style & range");
++            if(preview){ImGui::TableNextColumn();DrawPreview(false);}ImGui::EndTable();
++        }
++        UITheme::BeginCard("esp_style",UITheme::Icon::Spark,nullptr);
++        const int styleColumns=ImGui::GetContentRegionAvail().x>=S(680.f)?3:1;
++        if(ImGui::BeginTable("style_parameters",styleColumns,ImGuiTableFlags_SizingStretchSame,{ImGui::GetContentRegionAvail().x-S(6.f),0.f})){
++            ImGui::TableNextColumn();ImGui::AlignTextToFramePadding();UITheme::InfoText("Box Mode");ImGui::SameLine(0,S(10.f));
++            ImGui::SetNextItemWidth(fmaxf(S(90.f),ImGui::GetContentRegionAvail().x));
+             const char* boxModes[]={"Full Box","Corner Box","2D Lines"};int bm=static_cast<int>(ESP::cfg.BoxMode);
+-            if(UITheme::ComboRow("Box Mode",&bm,boxModes,3))ESP::cfg.BoxMode=static_cast<ESP::BoxStyle>(bm);
+-            UITheme::SliderFloatRow("Box Thickness",&ESP::cfg.BoxThickness,.5f,5.f,"%.1f px");
++            if(ImGui::Combo("##box_mode",&bm,boxModes,3))ESP::cfg.BoxMode=static_cast<ESP::BoxStyle>(bm);
++            UITheme::HelpLastItem("Box Mode");
++            ImGui::TableNextColumn();ImGui::AlignTextToFramePadding();UITheme::InfoText("Box Thickness");ImGui::SameLine(0,S(10.f));
++            ImGui::SetNextItemWidth(fmaxf(S(70.f),ImGui::GetContentRegionAvail().x));
++            ImGui::SliderFloat("##box_thickness",&ESP::cfg.BoxThickness,.5f,5.f,"%.1f px",ImGuiSliderFlags_AlwaysClamp);
++            UITheme::HelpLastItem("Box Thickness");
++            ImGui::TableNextColumn();ImGui::AlignTextToFramePadding();UITheme::InfoText("Max distance");ImGui::SameLine(0,S(10.f));
++            ImGui::SetNextItemWidth(fmaxf(S(70.f),ImGui::GetContentRegionAvail().x));
+             float meters=ESP::cfg.MaxDistance*.01f;
+-            if(UITheme::SliderFloatRow("Max distance (meters)",&meters,50.f,1000.f,"%.0f m"))ESP::cfg.MaxDistance=meters*100.f;
+-            UITheme::HelpLastItem("Max distance","Display distance in meters. 1 meter equals 100 Unreal units; the stored setting is unchanged in units.");
+-            if(ImGui::CollapsingHeader("Advanced style")){
+-                UITheme::SliderFloatRow("Corner Length",&ESP::cfg.CornerLength,3.f,30.f,"%.0f");
+-                UITheme::CheckboxRow("Visible Check",&ESP::cfg.VisibleCheck);
+-            }
+-            UITheme::EndCard();
+-            if(preview){ImGui::TableNextColumn();DrawPreview(false);}ImGui::EndTable();
+-        }
++            if(ImGui::SliderFloat("##max_distance",&meters,50.f,1000.f,"%.0f m",ImGuiSliderFlags_AlwaysClamp))ESP::cfg.MaxDistance=meters*100.f;
++            UITheme::HelpLastItem("Max distance","Distance shown in meters. Storage remains in Unreal units.");
++            ImGui::EndTable();
++        }
++        UITheme::EndCard();
+         if(!preview&&ImGui::CollapsingHeader("Overlay preview"))DrawPreview(false);
+         }
+         else if (s_section[0] == 1)
+         {
++        UITheme::BeginCard("esp_target_details",UITheme::Icon::Target,"Target details");
++        if (ESP::cfg.ShowJungle)
++            UITheme::SliderFloatRow("Camp Range", &ESP::cfg.JungleMaxDistance,
++                                     2000.f, 80000.f, "%.0f UU");
++        if (ESP::cfg.ShowWards)
++        {
++            ImGui::Indent(16.f);
++            UITheme::CheckboxRow("Enemy Wards",        &ESP::cfg.ShowEnemyWards);
++            UITheme::CheckboxRow("Friendly Wards",     &ESP::cfg.ShowFriendlyWards);
++            UITheme::CheckboxRow("Ward Vision Radius", &ESP::cfg.ShowWardRadius);
++            ImGui::Unindent(16.f);
++        }
++        UITheme::SliderFloatRow("Corner Length",&ESP::cfg.CornerLength,3.f,30.f,"%.0f");
++        UITheme::CheckboxRow("Visible Check",&ESP::cfg.VisibleCheck);
++        UITheme::EndCard();
+         UITheme::BeginCard("esp_extra", UITheme::Icon::Layers, "Additional elements");
+         UITheme::CheckboxRow("Mana Bar", &ESP::cfg.ShowManaBar);
+         UITheme::CheckboxRow("Shield Bar", &ESP::cfg.ShowShieldBar);
+@@ -413,40 +414,42 @@
+ 
+     static void DrawCooldownHubPage()
+     {
+-        UITheme::FeatureMaster(UITheme::Icon::Layers, "Cooldown Hub", nullptr, &CooldownWindow::cfg.Enabled);
+-        if (!CooldownWindow::cfg.Enabled) ImGui::BeginDisabled();
+-        if (s_section[1] == 0)
+-        {
+-        UITheme::BeginCard("cd_hub_display", UITheme::Icon::Layers, "Display");
+-        UITheme::CheckboxRow("Show Enemies", &CooldownWindow::cfg.ShowEnemies);
+-        UITheme::CheckboxRow("Show Team",    &CooldownWindow::cfg.ShowTeam);
+-        if (CooldownWindow::cfg.ShowTeam)
+-            UITheme::CheckboxRow("Show Self", &CooldownWindow::cfg.ShowSelf);
+-        UITheme::CheckboxRow("Split Hubs",   &CooldownWindow::cfg.SplitHubs);
+-        UITheme::CheckboxRow("Transparent Background", &CooldownWindow::cfg.TransparentBackground);
+-        UITheme::CheckboxRow("Widget Mode", &CooldownWindow::cfg.WidgetMode);
+-        if (CooldownWindow::cfg.WidgetMode)
+-        {
+-            UITheme::CheckboxRow("Vertical Layout", &CooldownWindow::cfg.WidgetVerticalLayout);
+-            UITheme::SliderFloatRow("God Name Size",
+-                                    &CooldownWindow::cfg.WidgetGodNameSize, 10.f, 28.f, "%.0f");
+-        }
+-        UITheme::SliderFloatRow("Icon Size", &CooldownWindow::cfg.HubTileSize, 24.f, 56.f, "%.0f");
+-        UITheme::EndCard();
+-        }
+-        else
+-        {
+-        UITheme::BeginCard("cd_hub_slots", UITheme::Icon::Layers, "Hub Slots");
+-        UITheme::CheckboxRow("God Name", &CooldownWindow::cfg.ShowGodName);
+-        UITheme::CheckboxRow("Distance", &CooldownWindow::cfg.ShowDistance);
+-        UITheme::CheckboxRow("Ability 1", &CooldownWindow::cfg.ShowAbility1);
+-        UITheme::CheckboxRow("Ability 2", &CooldownWindow::cfg.ShowAbility2);
+-        UITheme::CheckboxRow("Ability 3", &CooldownWindow::cfg.ShowAbility3);
+-        UITheme::CheckboxRow("Ability 4", &CooldownWindow::cfg.ShowAbility4);
+-        UITheme::CheckboxRow("Relic", &CooldownWindow::cfg.ShowRelic);
+-        UITheme::EndCard();
+-        }
+-        if (!CooldownWindow::cfg.Enabled) ImGui::EndDisabled();
++        if(!CooldownWindow::cfg.Enabled)ImGui::BeginDisabled();
++        const int columns=ImGui::GetContentRegionAvail().x>=S(620.f)?2:1;
++        if(ImGui::BeginTable("cooldown_cards",columns,ImGuiTableFlags_SizingStretchSame)){
++            ImGui::TableNextColumn();
++            if(s_section[1]==0){
++                UITheme::BeginCard("cd_hub_display",UITheme::Icon::Layers,"Display",nullptr,334.f);
++                UITheme::CheckboxRow("Show Enemies",&CooldownWindow::cfg.ShowEnemies);
++                UITheme::CheckboxRow("Show Team",&CooldownWindow::cfg.ShowTeam);
++                if(CooldownWindow::cfg.ShowTeam)UITheme::CheckboxRow("Show Self",&CooldownWindow::cfg.ShowSelf);
++                UITheme::CheckboxRow("Split Hubs",&CooldownWindow::cfg.SplitHubs);
++                UITheme::CheckboxRow("Transparent Background",&CooldownWindow::cfg.TransparentBackground);
++                UITheme::EndCard();ImGui::TableNextColumn();
++                UITheme::BeginCard("cd_hub_layout",UITheme::Icon::Layers,"Layout",nullptr,334.f);
++                UITheme::CheckboxRow("Widget Mode",&CooldownWindow::cfg.WidgetMode);
++                if(CooldownWindow::cfg.WidgetMode){
++                    UITheme::CheckboxRow("Vertical Layout",&CooldownWindow::cfg.WidgetVerticalLayout);
++                    UITheme::SliderFloatRow("God Name Size",&CooldownWindow::cfg.WidgetGodNameSize,10.f,28.f,"%.0f");
++                }
++                UITheme::SliderFloatRow("Icon Size",&CooldownWindow::cfg.HubTileSize,24.f,56.f,"%.0f");
++                UITheme::EndCard();
++            }else{
++                UITheme::BeginCard("cd_hub_labels",UITheme::Icon::Layers,"Labels",nullptr,334.f);
++                UITheme::CheckboxRow("God Name",&CooldownWindow::cfg.ShowGodName);
++                UITheme::CheckboxRow("Distance",&CooldownWindow::cfg.ShowDistance);
++                UITheme::EndCard();ImGui::TableNextColumn();
++                UITheme::BeginCard("cd_hub_slots",UITheme::Icon::Layers,"Hub Slots",nullptr,334.f);
++                UITheme::CheckboxRow("Ability 1",&CooldownWindow::cfg.ShowAbility1);
++                UITheme::CheckboxRow("Ability 2",&CooldownWindow::cfg.ShowAbility2);
++                UITheme::CheckboxRow("Ability 3",&CooldownWindow::cfg.ShowAbility3);
++                UITheme::CheckboxRow("Ability 4",&CooldownWindow::cfg.ShowAbility4);
++                UITheme::CheckboxRow("Relic",&CooldownWindow::cfg.ShowRelic);
++                UITheme::EndCard();
++            }
++            ImGui::EndTable();
++        }
++        if(!CooldownWindow::cfg.Enabled)ImGui::EndDisabled();
+     }
+ 
+     static void DrawCombatPage()
+@@ -454,10 +457,10 @@
+         if (!Aimbot::cfg.Enabled) ImGui::BeginDisabled();
+         if (s_section[2] == 0)
+         {
+-            const float width=ImGui::GetContentRegionAvail().x;const bool preview=width>=S(1050.f);
+-            const int columns=preview?3:(width>=S(720.f)?2:1);
++            const float width=ImGui::GetContentRegionAvail().x;const bool preview=width>=S(880.f);
++            const int columns=preview?3:(width>=S(620.f)?2:1);
+             if(ImGui::BeginTable("combat_workspace",columns,ImGuiTableFlags_SizingStretchProp)){
+-                if(preview){ImGui::TableSetupColumn("Activation",ImGuiTableColumnFlags_WidthStretch);ImGui::TableSetupColumn("Targeting",ImGuiTableColumnFlags_WidthStretch);ImGui::TableSetupColumn("Preview",ImGuiTableColumnFlags_WidthFixed,S(310.f));}
++                if(preview){ImGui::TableSetupColumn("Activation",ImGuiTableColumnFlags_WidthStretch);ImGui::TableSetupColumn("Targeting",ImGuiTableColumnFlags_WidthStretch);ImGui::TableSetupColumn("Preview",ImGuiTableColumnFlags_WidthFixed,S(316.f));}
+                 ImGui::TableNextColumn();UITheme::BeginCard("aim_act",UITheme::Icon::Bolt,"Activation", "Your bindings stay in control.");
+                 auto binding=[](const char* label,const char* id,Aimbot::HoldBindType& type,int& key,int& device,int& button,bool unbound){
+                     const ImVec2 p=ImGui::GetCursorScreenPos();const float w=ImGui::GetContentRegionAvail().x;
+@@ -521,7 +524,6 @@
+     static void DrawRadarPage()
+     {
+         if(s_section[3]==1){WorldEnvironment::DrawSettings();return;}
+-        UITheme::FeatureMaster(UITheme::Icon::MapHack, "Map Hack", nullptr, &MapHack::cfg.Enabled);
+ 
+         if (!MapHack::cfg.Enabled) ImGui::BeginDisabled();
+ 
+@@ -537,8 +539,7 @@
+ 
+     static void DrawSkinsPage()
+     {
+-        UITheme::FeatureMaster(UITheme::Icon::Skins, "Skin Changer",
+-            "Skin module unchanged. Apply has a known transition crash risk.");
++        UITheme::InfoText("Skin module unchanged. Apply has a known transition crash risk.");
+ 
+         UITheme::BeginCard("skins_main", UITheme::Icon::Skins, "Loadout Skins");
+         SkinChanger::DrawMenu();
+@@ -550,7 +551,7 @@
+         if(s_section[5]==3){StatusOverlay::DrawSettings();DeathCamera::DrawSettings();return;}
+         if(s_section[5]==0){
+             DrawComfortCard();
+-            const bool wide=ImGui::GetContentRegionAvail().x>=S(1000.f);
++            const bool wide=ImGui::GetContentRegionAvail().x>=S(840.f);
+             if(ImGui::BeginTable("settings_top",wide?2:1,ImGuiTableFlags_SizingStretchProp)){
+                 if(wide){ImGui::TableSetupColumn("Theme",ImGuiTableColumnFlags_WidthStretch);ImGui::TableSetupColumn("Config",ImGuiTableColumnFlags_WidthFixed,S(290.f));}
+                 ImGui::TableNextColumn();DrawThemeTiles();ImGui::TableNextColumn();DrawProfileCard();ImGui::EndTable();
+@@ -581,10 +582,12 @@
+                 UITheme::SliderFloatRow("Speed",&UITheme::menuFx.ParticleSpeed,.5f,2.5f,"%.1f");ImGui::EndDisabled();
+                 UITheme::EndCard();ImGui::EndTable();
+             }
++            UITheme::BeginCard("performance_quick",UITheme::Icon::Info,"Diagnostics");
+             UITheme::CheckboxRow("Performance diagnostics (CPU)",&Performance::enabled);
+             if(Performance::enabled){UITheme::CheckboxRow("Show timing overlay",&Performance::showOverlay);UITheme::InfoText("CPU time per frame, not GPU time or total game frametime.");}
++            UITheme::EndCard();
+         }else if(s_section[5]==1){
+-            if(ImGui::BeginTable("automation_cards",ImGui::GetContentRegionAvail().x>=S(940.f)?2:1,ImGuiTableFlags_SizingStretchSame)){
++            if(ImGui::BeginTable("automation_cards",ImGui::GetContentRegionAvail().x>=S(760.f)?2:1,ImGuiTableFlags_SizingStretchSame)){
+                 ImGui::TableNextColumn();
+                 UITheme::BeginCard("cfg_auto_dagger",UITheme::Icon::Bolt,"Auto Dagger",nullptr,440.f);
+                 UITheme::CheckboxRow("Enabled",&AutoDagger::cfg.Enabled);
+@@ -614,88 +617,105 @@
+ 
+     static void DrawSidebar(float height)
+     {
+-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding,{S(16.f),S(26.f)});
+-        ImGui::BeginChild("##sidebar",{S(UITheme::SidebarWidth),height},ImGuiChildFlags_AlwaysUseWindowPadding);
+-        const ImVec2 logo=ImGui::GetCursorScreenPos();
+-        UITheme::DrawBrandMark(ImGui::GetWindowDrawList(),{logo.x+S(29.f),logo.y+S(18.f)},S(15.f));
+-        ImGui::Dummy({S(58.f),S(88.f)});
++        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding,{S(17.f),S(24.f)});
++        ImGui::BeginChild("##sidebar",{S(UITheme::SidebarWidth),height},ImGuiChildFlags_AlwaysUseWindowPadding,
++                          ImGuiWindowFlags_NoScrollbar|ImGuiWindowFlags_NoScrollWithMouse);
++        const ImVec2 origin=ImGui::GetWindowPos();auto* dl=ImGui::GetWindowDrawList();
++        UITheme::DrawBrandMark(dl,{origin.x+S(38.f),origin.y+S(44.f)},S(14.f));
++        ImGui::SetCursorPos({S(59.f),S(33.f)});
++        if(UITheme::fontBrand)ImGui::PushFont(UITheme::fontBrand);
++        ImGui::TextUnformatted(UITheme::BrandName);
++        if(UITheme::fontBrand)ImGui::PopFont();
++        ImGui::SetCursorPos({S(67.f),S(72.f)});UITheme::InfoText("S M I T E  2\nI N T E R N A L");
++        ImGui::SetCursorPos({S(28.f),S(134.f)});UITheme::InfoText("W O R K S P A C E");
++        ImGui::SetCursorPos({S(17.f),S(164.f)});
+         const Page pages[]={Page::Visuals,Page::CooldownHub,Page::Combat,Page::Radar,Page::Skins,Page::Settings};
+         for(const Page page:pages){
+             if(UITheme::NavButton(PageTitle(page),PageIcon(page),PageTitle(page),s_page==page))s_page=page;
+-            ImGui::Dummy({0.f,S(10.f)});
+-        }
++        }
++        const float footerY=fmaxf(S(520.f),height-S(102.f));
++        dl->AddLine({origin.x+S(17.f),origin.y+footerY},{origin.x+S(203.f),origin.y+footerY},UITheme::ToU32(UITheme::palette.border));
++        dl->AddCircleFilled({origin.x+S(31.f),origin.y+footerY+S(26.f)},S(3.f),UITheme::ToU32(UITheme::palette.accent));
++        ImGui::SetCursorPos({S(43.f),footerY+S(17.f)});UITheme::InfoText("Local configuration");
++        const ImVec2 key={origin.x+S(29.f),origin.y+footerY+S(51.f)};
++        dl->AddRect(key,{key.x+S(57.f),key.y+S(25.f)},UITheme::ToU32(UITheme::palette.borderHi),S(3.f));
++        ImGui::SetCursorScreenPos({key.x+S(6.f),key.y+S(4.f)});UITheme::InfoText("INSERT");
++        ImGui::SetCursorPos({S(95.f),footerY+S(49.f)});UITheme::InfoText("Show / hide\nmenu");
+         ImGui::EndChild();ImGui::PopStyleVar();
+     }
+ 
+     static void DrawContentHeader()
+     {
+         auto* dl=ImGui::GetWindowDrawList();
+-        const float width=ImGui::GetContentRegionAvail().x;
+-        const ImVec2 breadcrumb=ImGui::GetCursorScreenPos();
+-        UITheme::InfoText("Workspace / ALWAYSLOSE");
+-        if(width>=S(490.f)){
+-            const float chipW=S(154.f),chipH=S(30.f);const ImVec2 pos={breadcrumb.x+width-chipW,breadcrumb.y-S(4.f)};
+-            dl->AddRectFilled(pos,{pos.x+chipW,pos.y+chipH},UITheme::ToU32(UITheme::palette.glassCard),chipH*.5f);
+-            dl->AddRect(pos,{pos.x+chipW,pos.y+chipH},UITheme::ToU32(UITheme::palette.border),chipH*.5f);
+-            dl->AddCircleFilled({pos.x+S(14.f),pos.y+chipH*.5f},S(2.5f),UITheme::ToU32(UITheme::palette.success));
+-            if(UITheme::fontSmall)ImGui::PushFont(UITheme::fontSmall);
+-            dl->AddText({pos.x+S(26.f),pos.y+(chipH-ImGui::GetFontSize())*.5f},UITheme::ToU32(UITheme::palette.textDim),"Default profile");
+-            if(UITheme::fontSmall)ImGui::PopFont();
+-        }
+-        ImGui::Dummy({0.f,S(28.f)});
+-        const ImVec2 title=ImGui::GetCursorScreenPos();
+-        if(UITheme::fontTitle)ImGui::PushFont(UITheme::fontTitle);
+-        ImGui::TextUnformatted(s_page==Page::Settings&&s_section[5]==1?"Automation":PageTitle(s_page));
+-        if(UITheme::fontTitle)ImGui::PopFont();
+-        const char* descriptions[]={"A clearer view. Less noise.","Track abilities in one place.","Activation, targeting and display - neatly separated.","Choose the map elements to display.","Manage your loadout appearance.","A little more clarity. A lot more you."};
+-        UITheme::InfoText(s_page==Page::Settings&&s_section[5]==1?"Configure timing and behaviour in one place.":descriptions[static_cast<int>(s_page)]);
+-        bool* master=nullptr;const char* masterLabel=nullptr;
+-        if(s_page==Page::Visuals&&s_section[0]!=3){master=&ESP::cfg.Enabled;masterLabel="Visual overlay";}
+-        if(s_page==Page::Combat){master=&Aimbot::cfg.Enabled;masterLabel="Predictive aimbot";}
+-        if(master){
+-            const float pw=ImGui::CalcTextSize(masterLabel).x+S(86.f),ph=S(46.f);
+-            const ImVec2 after=ImGui::GetCursorScreenPos();
+-            const bool inlinePill=width>=S(720.f);
+-            const ImVec2 pos=inlinePill?ImVec2(title.x+width-pw,title.y+S(10.f)):ImVec2(after.x,after.y+S(12.f));
+-            dl->AddRectFilled(pos,{pos.x+pw,pos.y+ph},UITheme::ToU32(UITheme::palette.glassCard),ph*.5f);
+-            dl->AddRect(pos,{pos.x+pw,pos.y+ph},UITheme::ToU32(UITheme::palette.border),ph*.5f);
+-            dl->AddText({pos.x+S(16.f),pos.y+(ph-ImGui::GetFontSize())*.5f},UITheme::ToU32(UITheme::palette.textDim),masterLabel);
+-            ImGui::SetCursorScreenPos({pos.x+pw-S(57.f),pos.y+(ph-S(26.f))*.5f});
+-            UITheme::ToggleSwitch("##page_master",master,43.f);UITheme::HelpLastItem(masterLabel);
+-            ImGui::SetCursorScreenPos(inlinePill?after:ImVec2(after.x,pos.y+ph+S(6.f)));
+-        }
+-        ImGui::Dummy({0.f,S(22.f)});
++        const ImVec2 origin=ImGui::GetWindowPos();const float width=ImGui::GetContentRegionAvail().x;
++        const float left=ImGui::GetCursorScreenPos().x;
+         const char* visual[]={"Players","Details","Colors","Camera"};const char* cooldown[]={"Display","Slots"};
+         const char* combat[]={"Targeting","Ballistics","Overlay"};const char* map[]={"Filters","World"};const char* skins[]={"Loadout"};
+         const char* settings[]={"Appearance","Automation","Profiles","Overlay"};const char* const* labels=visual;int count=4;
+         switch(s_page){case Page::CooldownHub:labels=cooldown;count=2;break;case Page::Combat:labels=combat;count=3;break;case Page::Radar:labels=map;count=2;break;case Page::Skins:labels=skins;count=1;break;case Page::Settings:labels=settings;count=4;break;default:break;}
+         int& selected=s_section[static_cast<int>(s_page)];
+-        const ImVec2 start=ImGui::GetCursorScreenPos();const float avail=ImGui::GetContentRegionAvail().x;
+-        const float h=fmaxf(S(38.f),ImGui::GetTextLineHeight()+S(16.f)),gap=S(4.f),pad=S(5.f);
+-        float widths[4]={},x=pad,total=pad;int rows=1;
+-        for(int i=0;i<count;i++){widths[i]=ImGui::CalcTextSize(labels[i]).x+S(30.f);if(x+widths[i]+pad>avail&&x>pad){rows++;x=pad;}x+=widths[i]+gap;total+=widths[i]+gap;}
+-        const float capsuleW=fminf(avail,total+pad-gap),capsuleH=pad*2+h*rows+gap*(rows-1);
+-        dl->AddRectFilled(start,{start.x+capsuleW,start.y+capsuleH},UITheme::ToU32(UITheme::palette.bgSidebar),S(25.f));
+-        dl->AddRect(start,{start.x+capsuleW,start.y+capsuleH},UITheme::ToU32(UITheme::palette.border),S(25.f));
+-        x=pad;int r=0;
++        ImGui::SetCursorScreenPos({left,origin.y+S(24.f)});
++        ImGui::TextColored(UITheme::palette.textDim,"%s",PageTitle(s_page));ImGui::SameLine(0,S(14.f));
++        ImGui::TextColored(UITheme::palette.textDim,">");ImGui::SameLine(0,S(14.f));ImGui::TextUnformatted(labels[selected]);
++        // Both controls hide the menu only; they do not alter the host window or rendering backend.
++        const ImVec2 controls={left+width-S(58.f),origin.y+S(16.f)};
++        ImGui::SetCursorScreenPos({controls.x-S(36.f),controls.y});DrawSectionReset();
++        ImGui::SetCursorScreenPos(controls);
++        if(ImGui::InvisibleButton("##hide_menu",{S(26.f),S(30.f)},ImGuiButtonFlags_EnableNav))IsOpen=false;
++        dl->AddLine({controls.x+S(7.f),controls.y+S(15.f)},{controls.x+S(19.f),controls.y+S(15.f)},UITheme::ToU32(UITheme::palette.textDim));
++        if(ImGui::IsItemHovered())ImGui::SetTooltip("Hide menu (Insert to reopen)");
++        ImGui::SetCursorScreenPos({controls.x+S(32.f),controls.y});
++        if(ImGui::InvisibleButton("##close_menu",{S(26.f),S(30.f)},ImGuiButtonFlags_EnableNav))IsOpen=false;
++        dl->AddLine({controls.x+S(41.f),controls.y+S(11.f)},{controls.x+S(49.f),controls.y+S(19.f)},UITheme::ToU32(UITheme::palette.textDim));
++        dl->AddLine({controls.x+S(49.f),controls.y+S(11.f)},{controls.x+S(41.f),controls.y+S(19.f)},UITheme::ToU32(UITheme::palette.textDim));
++        if(ImGui::IsItemHovered())ImGui::SetTooltip("Close menu (Insert to reopen)");
++        ImGui::SetCursorScreenPos({left,origin.y+S(90.f)});
++        if(UITheme::fontTitle)ImGui::PushFont(UITheme::fontTitle);
++        ImGui::TextUnformatted(PageTitle(s_page));if(UITheme::fontTitle)ImGui::PopFont();
++        const char* descriptions[]={"A clearer view. Less noise.","Track abilities in one place.","Activation, targeting and display - neatly separated.","Choose the map elements to display.","Manage your loadout appearance.","Your interface. Your preferences."};
++        ImGui::SetCursorScreenPos({left,origin.y+S(137.f)});UITheme::InfoText(descriptions[static_cast<int>(s_page)]);
++        bool* master=nullptr;const char* masterLabel=nullptr;
++        if(s_page==Page::Visuals&&s_section[0]!=3){master=&ESP::cfg.Enabled;masterLabel="Visual overlay";}
++        if(s_page==Page::Combat){master=&Aimbot::cfg.Enabled;masterLabel="Predictive aimbot";}
++        if(s_page==Page::CooldownHub){master=&CooldownWindow::cfg.Enabled;masterLabel="Cooldown Hub";}
++        if(s_page==Page::Radar&&s_section[3]==0){master=&MapHack::cfg.Enabled;masterLabel="Map overlay";}
++        float tabsTop=S(164.f);
++        if(master){
++            if(UITheme::fontSmall)ImGui::PushFont(UITheme::fontSmall);
++            const float pw=ImGui::CalcTextSize(masterLabel).x+S(72.f),ph=S(45.f);
++            const bool inlineControl=width>=S(700.f);
++            const ImVec2 pos=inlineControl?ImVec2(left+width-pw,origin.y+S(101.f)):ImVec2(left,origin.y+S(168.f));
++            dl->AddRectFilled(pos,{pos.x+pw,pos.y+ph},UITheme::ToU32(UITheme::palette.bgCardHi),S(6.f));
++            dl->AddRect(pos,{pos.x+pw,pos.y+ph},UITheme::ToU32(UITheme::palette.borderHi),S(6.f));
++            dl->AddText({pos.x+S(15.f),pos.y+(ph-ImGui::GetFontSize())*.5f},UITheme::ToU32(UITheme::palette.textDim),masterLabel);
++            ImGui::SetCursorScreenPos({pos.x+pw-S(47.f),pos.y+(ph-S(19.f))*.5f});
++            UITheme::ToggleSwitch("##page_master",master,32.f);UITheme::HelpLastItem(masterLabel);
++            if(UITheme::fontSmall)ImGui::PopFont();
++            if(!inlineControl)tabsTop=S(226.f);
++        }
++        const float h=S(56.f),gap=S(28.f);float x=0.f;int row=0;
+         for(int i=0;i<count;i++){
+-            if(x+widths[i]+pad>avail&&x>pad){r++;x=pad;}
+-            const ImVec2 pos={start.x+x,start.y+pad+r*(h+gap)};ImGui::SetCursorScreenPos(pos);ImGui::PushID(i);
+-            if(ImGui::InvisibleButton("##section",{widths[i],h}))selected=i;
+-            if(selected==i){ImVec4 c=UITheme::palette.bgCardHi;c.w=1.f;UITheme::GradientRect(dl,pos,{pos.x+widths[i],pos.y+h},c,UITheme::palette.glassCard,h*.5f);dl->AddRect(pos,{pos.x+widths[i],pos.y+h},UITheme::ToU32(UITheme::palette.border),h*.5f);}
+-            dl->AddText({pos.x+S(15.f),pos.y+(h-ImGui::GetFontSize())*.5f},UITheme::ToU32(selected==i?UITheme::palette.text:UITheme::palette.textDim),labels[i]);
+-            ImGui::PopID();x+=widths[i]+gap;
+-        }
+-        ImGui::SetCursorScreenPos({start.x,start.y+capsuleH+S(24.f)});
++            const float tw=ImGui::CalcTextSize(labels[i]).x;
++            if(x+tw>width&&x>0.f){row++;x=0.f;}
++            const ImVec2 pos={left+x,origin.y+tabsTop+row*h};ImGui::SetCursorScreenPos(pos);ImGui::PushID(i);
++            if(ImGui::InvisibleButton("##section",{tw,h},ImGuiButtonFlags_EnableNav))selected=i;
++            dl->AddText({pos.x,pos.y+(h-ImGui::GetFontSize())*.5f},UITheme::ToU32(selected==i?UITheme::palette.text:UITheme::palette.textDim),labels[i]);
++            if(selected==i)dl->AddLine({pos.x,pos.y+h},{pos.x+tw,pos.y+h},UITheme::ToU32(UITheme::palette.accent),S(2.f));
++            if(ImGui::IsItemFocused())dl->AddRect({pos.x-S(3.f),pos.y+S(8.f)},{pos.x+tw+S(3.f),pos.y+h-S(8.f)},UITheme::ToU32(UITheme::palette.accent),S(3.f));
++            ImGui::PopID();x+=tw+gap;
++        }
++        const float bottom=origin.y+tabsTop+(row+1)*h;
++        dl->AddLine({left,bottom+S(1.f)},{left+width,bottom+S(1.f)},UITheme::ToU32(UITheme::palette.border));
++        ImGui::SetCursorScreenPos({left,bottom+S(24.f)});
+     }
+ 
+     static void DrawContentBody()
+     {
+-        const bool footerWide=ImGui::GetContentRegionAvail().x>=S(860.f);
+-        const float footerH=S(footerWide?68.f:100.f);
+-        const float scrollH=fmaxf(S(36.f),ImGui::GetContentRegionAvail().y-footerH);
+-        ImGui::BeginChild("##content_scroll", { 0.f, scrollH }, ImGuiChildFlags_None,
+-                          ImGuiWindowFlags_None);
++        const bool footerWide=ImGui::GetContentRegionAvail().x>=S(660.f);
++        const ImVec2 panelPos=ImGui::GetWindowPos(),panelSize=ImGui::GetWindowSize();
++        const float footerTop=panelPos.y+panelSize.y-S(footerWide?84.f:126.f);
++        const float scrollH=fmaxf(S(36.f),footerTop-S(24.f)-ImGui::GetCursorScreenPos().y);
++        ImGui::BeginChild("##content_scroll",{0.f,scrollH},ImGuiChildFlags_None,ImGuiWindowFlags_None);
+ 
+         switch (s_page)
+         {
+@@ -708,23 +728,36 @@
+         default: break;
+         }
+ 
+-        DrawSectionReset();
+         ImGui::EndChild();
+-        ImGui::Spacing();ImGui::Separator();ImGui::Spacing();
+-        const ImVec2 row=ImGui::GetCursorPos();
+-        const float available=ImGui::GetContentRegionAvail().x;
+-        if(footerWide)ImGui::PushTextWrapPos(row.x+available-S(365.f));
++        auto* dl=ImGui::GetWindowDrawList();
++        ImVec4 fill=UITheme::palette.bgCard;fill.w=UITheme::appearance.Opacity;
++        dl->AddRectFilled({panelPos.x,footerTop},{panelPos.x+panelSize.x,panelPos.y+panelSize.y},UITheme::ToU32(fill),S(14.f),ImDrawFlags_RoundCornersBottomRight);
++        dl->AddLine({panelPos.x,footerTop},{panelPos.x+panelSize.x,footerTop},UITheme::ToU32(UITheme::palette.border));
++        const float left=panelPos.x+S(30.f),right=panelPos.x+panelSize.x-S(30.f);
++        ImGui::SetCursorScreenPos({left,footerTop+S(22.f)});
++        const float textWidth=footerWide?right-left-S(320.f):right-left;
++        ImGui::PushTextWrapPos(ImGui::GetCursorPosX()+textWidth);
+         if(s_configNotice&&ImGui::GetTime()<s_configNoticeUntil)
+             ImGui::TextColored(s_configNoticeOk?UITheme::palette.success:UITheme::palette.danger,"%s",s_configNotice);
+-        else UITheme::InfoText("Saved only when you choose");
+-        if(footerWide){ImGui::PopTextWrapPos();ImGui::SetCursorPos({row.x+available-S(360.f),row.y});}
+-        if(UITheme::ActionButton("footer_load",UITheme::Icon::Load,"Load profile",UITheme::palette.textDim,{160.f,40.f}))NotifyConfig(false);
+-        ImGui::SameLine(0,S(10.f));
++        else UITheme::InfoText("Your settings stay under your control.\nSaved only when you choose.");
++        ImGui::PopTextWrapPos();
++        ImGui::SetCursorScreenPos({footerWide?right-S(299.f):left,footerTop+S(footerWide?21.f:72.f)});
++        if(UITheme::ActionButton("footer_load",UITheme::Icon::Load,"Load profile",UITheme::palette.textDim,{132.f,42.f}))NotifyConfig(false);
++        ImGui::SameLine(0,S(12.f));
+         ImGui::PushStyleColor(ImGuiCol_Button,UITheme::palette.accent);
+         ImGui::PushStyleColor(ImGuiCol_ButtonHovered,UITheme::palette.accentHi);
+-        ImGui::PushStyleColor(ImGuiCol_Text,{.015f,.08f,.10f,1.f});
+-        if(ImGui::Button("Save changes##footer",{fminf(S(190.f),ImGui::GetContentRegionAvail().x),fmaxf(S(40.f),ImGui::GetFrameHeight())}))NotifyConfig(true);
+-        UITheme::HelpLastItem("Save changes");ImGui::PopStyleColor(3);
++        ImGui::PushStyleColor(ImGuiCol_ButtonActive,UITheme::palette.accent);
++        ImGui::PushStyleColor(ImGuiCol_Text,{.063f,.094f,.153f,1.f});
++        const bool save=ImGui::Button("##save_changes_footer",{S(155.f),S(42.f)});
++        UITheme::HelpLastItem("Save changes");
++        const ImVec2 savePos=ImGui::GetItemRectMin();
++        const ImVec4 old=UITheme::palette.accentHi;UITheme::palette.accentHi={.063f,.094f,.153f,1.f};
++        UITheme::DrawIcon(dl,UITheme::Icon::Save,{savePos.x+S(25.f),savePos.y+S(21.f)},S(13.f));
++        if(UITheme::fontBrand)ImGui::PushFont(UITheme::fontBrand,16.f);
++        dl->AddText({savePos.x+S(42.f),savePos.y+(S(42.f)-ImGui::GetFontSize())*.5f},UITheme::ToU32(UITheme::palette.accentHi),"Save changes");
++        if(UITheme::fontBrand)ImGui::PopFont();UITheme::palette.accentHi=old;
++        ImGui::PopStyleColor(4);
++        if(save)NotifyConfig(true);
+     }
+ 
+     void Draw()
+@@ -776,7 +809,7 @@
+         if(io.KeyCtrl&&!io.WantTextInput&&ImGui::IsKeyPressed(ImGuiKey_0)){UITheme::comfort.Scale=1.f;s_fitMenu=true;}
+         UITheme::BeginMenuFrame();
+         const ImVec2 maxSize={fmaxf(1.f,io.DisplaySize.x-20.f),fmaxf(1.f,io.DisplaySize.y-20.f)};
+-        const ImVec2 winSize={fminf(S(1400.f),maxSize.x),fminf(S(980.f),maxSize.y)};
++        const ImVec2 winSize={fminf(S(1220.f),maxSize.x),fminf(S(810.f),maxSize.y)};
+         ImGui::SetNextWindowSizeConstraints({fminf(S(860.f),maxSize.x),fminf(S(640.f),maxSize.y)},maxSize);
+         const ImGuiCond fit=s_fitMenu?ImGuiCond_Always:ImGuiCond_FirstUseEver;
+         ImGui::SetNextWindowSize(winSize,fit);
+@@ -785,7 +818,7 @@
+ 
+         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.f, 0.f });
+         ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
+-        ImGui::Begin("##alwayslose_violet_studio", &IsOpen,
++        ImGui::Begin("##alwayslose_slate_studio", &IsOpen,
+                      ImGuiWindowFlags_NoTitleBar |
+                      ImGuiWindowFlags_NoScrollbar |
+                      ImGuiWindowFlags_NoScrollWithMouse);
+@@ -809,7 +842,7 @@
+         DrawSidebar(bodyH);
+         ImGui::SameLine(0.f, 0.f);
+ 
+-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { S(40.f), S(30.f) });
++        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { S(30.f), 0.f });
+         // On very short/high-DPI displays the outer panel may also scroll, keeping the footer reachable.
+         ImGui::BeginChild("##mainpanel", { 0.f, bodyH }, ImGuiChildFlags_AlwaysUseWindowPadding);
+         DrawContentHeader();
+--- a/ui/theme.cpp
++++ b/ui/theme.cpp
+@@ -19,6 +19,7 @@
+     static const char* s_cardTitle = nullptr;
+     ImFont* fontRegular = nullptr;
+     ImFont* fontTitle   = nullptr;
++    ImFont* fontHeading = nullptr;
+     ImFont* fontSmall   = nullptr;
+     ImFont* fontBrand   = nullptr;
+ 
+@@ -212,11 +213,10 @@
+     void DrawGlassRect(ImDrawList* dl, ImVec2 min, ImVec2 max,
+                        const ImVec4& fill, bool accentTop, bool innerHighlight)
+     {
+-        const float radius=fminf(CornerRadius,fminf(max.x-min.x,max.y-min.y)*.5f);
+-        ImVec4 top=fill;top.x+=.018f;top.y+=.018f;top.z+=.025f;
+-        GradientRect(dl,min,max,top,fill,radius);
++        (void)accentTop; (void)innerHighlight;
++        const float radius=fminf(Px(9.f),fminf(max.x-min.x,max.y-min.y)*.5f);
++        dl->AddRectFilled(min,max,ToU32(fill),radius);
+         dl->AddRect(min,max,ToU32(palette.border),radius,0,Px(1.f));
+-        if(innerHighlight)dl->AddLine({min.x+radius,min.y+Px(1.f)},{max.x-radius,min.y+Px(1.f)},ToU32({palette.text.x,palette.text.y,palette.text.z,.055f}),Px(1.f));
+     }
+ 
+     ImU32 ToU32(const ImVec4& c)
+@@ -265,16 +265,16 @@
+ 
+     void DrawBrandMark(ImDrawList* dl, ImVec2 c, float radius)
+     {
+-        const ImU32 col = ToU32(palette.accent);
+-        const float t = fmaxf(1.5f, radius * 0.20f);
+-        dl->AddLine({c.x-radius*.8f,c.y+radius*.75f},{c.x,c.y-radius*.85f},col,t);
+-        dl->AddLine({c.x,c.y-radius*.85f},{c.x+radius*.8f,c.y+radius*.75f},col,t);
+-        dl->AddLine({c.x-radius*.4f,c.y+radius*.15f},{c.x+radius*.4f,c.y+radius*.15f},col,t);
++        const ImU32 color=ToU32(palette.accent);
++        const ImVec2 diamond[]={{c.x,c.y-radius},{c.x+radius,c.y},{c.x,c.y+radius},{c.x-radius,c.y}};
++        dl->AddPolyline(diamond,4,color,ImDrawFlags_Closed,Px(1.f));
++        const float r=radius*.38f;
++        dl->AddQuadFilled({c.x,c.y-r},{c.x+r,c.y},{c.x,c.y+r},{c.x-r,c.y},color);
+     }
+ 
+     void DrawIcon(ImDrawList* dl, Icon icon, ImVec2 c, float size)
+     {
+-        const float h = size * .42f, t = 1.5f;
++        const float h = size * .42f, t = Px(1.2f);
+         const ImU32 col = ToU32(IconColor(icon));
+         auto line = [&](float x1,float y1,float x2,float y2) {
+             dl->AddLine({c.x+x1*h,c.y+y1*h},{c.x+x2*h,c.y+y2*h},col,t);
+@@ -299,7 +299,10 @@
+             dl->AddCircle(c,h*.65f,col,20,t);dl->AddCircle(c,h*.23f,col,16,t);
+             for(int i=0;i<8;i++){float a=i*3.14159265f/4.f;dl->AddLine({c.x+cosf(a)*h*.65f,c.y+sinf(a)*h*.65f},{c.x+cosf(a)*h,c.y+sinf(a)*h},col,t);}break;
+         case Icon::Layers:
+-            dl->AddCircle(c,h,col,24,t);line(0,-.6f,0,0);line(0,0,.5f,.3f);break;
++            for(int y=0;y<2;y++)for(int x=0;x<2;x++){
++                const ImVec2 a={c.x-h+x*h*1.25f,c.y-h+y*h*1.25f};
++                dl->AddRect(a,{a.x+h*.65f,a.y+h*.65f},col,Px(1.f),0,t);
++            }break;
+         case Icon::Save:
+             dl->AddRect({c.x-h,c.y-h},{c.x+h,c.y+h},col,2.f,0,t);line(-.5f,-1,-.5f,-.15f);line(-.5f,-.15f,.5f,-.15f);line(.5f,-.15f,.5f,-1);line(-.5f,.4f,.5f,.4f);break;
+         case Icon::Load:
+@@ -325,12 +328,11 @@
+     void DrawWindowChrome(ImDrawList* dl, ImVec2 p, ImVec2 sz, float sidebarW)
+     {
+         const ImVec2 m={p.x+sz.x,p.y+sz.y};
+-        dl->AddRectFilled({p.x+Px(3.f),p.y+Px(10.f)},{m.x+Px(3.f),m.y+Px(10.f)},IM_COL32(0,0,0,45),CornerRadius);
+-        ImVec4 top=palette.glassDeep;top.x+=.020f;top.y+=.018f;top.z+=.042f;
+-        GradientRect(dl,p,m,top,palette.glassDeep,CornerRadius);
+-        GradientRect(dl,p,{p.x+sidebarW,m.y},palette.glassSidebar,palette.glassDeep,CornerRadius,ImDrawFlags_RoundCornersLeft);
+-        dl->AddLine({p.x+sidebarW,p.y+Px(1.f)},{p.x+sidebarW,m.y-Px(1.f)},ToU32(palette.lineSoft));
+-        dl->AddLine({p.x+CornerRadius,p.y+Px(1.f)},{m.x-CornerRadius,p.y+Px(1.f)},ToU32({.78f,.85f,1.f,.18f}));
++        dl->AddRectFilled({p.x,p.y+Px(8.f)},{m.x,m.y+Px(8.f)},IM_COL32(0,0,0,32),CornerRadius);
++        dl->AddRectFilled(p,m,ToU32(palette.bgDeep),CornerRadius);
++        dl->AddRectFilled(p,{p.x+sidebarW,m.y},ToU32(palette.bgSidebar),CornerRadius,ImDrawFlags_RoundCornersLeft);
++        dl->AddLine({p.x+sidebarW,p.y},{p.x+sidebarW,m.y},ToU32(palette.border),Px(1.f));
++        dl->AddLine({p.x+sidebarW,p.y+Px(62.f)},{m.x,p.y+Px(62.f)},ToU32(palette.border),Px(1.f));
+     }
+ 
+     void DrawMenuOutline(ImDrawList* dl, ImVec2 min, ImVec2 max)
+@@ -379,7 +381,8 @@
+         };
+ 
+         fontRegular = load("C:\\Windows\\Fonts\\arial.ttf", "C:\\Windows\\Fonts\\segoeui.ttf", 16.f);
+-        fontTitle   = load("C:\\Windows\\Fonts\\arial.ttf", "C:\\Windows\\Fonts\\segoeui.ttf", 38.f);
++        fontTitle   = load("C:\\Windows\\Fonts\\arialbd.ttf", "C:\\Windows\\Fonts\\segoeuib.ttf", 36.f);
++        fontHeading = load("C:\\Windows\\Fonts\\arialbd.ttf", "C:\\Windows\\Fonts\\segoeuib.ttf", 18.f);
+         fontBrand   = load("C:\\Windows\\Fonts\\arialbd.ttf", "C:\\Windows\\Fonts\\segoeuib.ttf", 18.f);
+         fontSmall   = load("C:\\Windows\\Fonts\\arial.ttf", "C:\\Windows\\Fonts\\segoeui.ttf", 14.f);
+         io.FontDefault = fontRegular;
+@@ -395,9 +398,9 @@
+         s.AntiAliasedFill  = true;
+ 
+         s.WindowRounding     = CornerRadius;
+-        s.ChildRounding      = CornerRadius;
+-        s.FrameRounding      = CornerRadius;
+-        s.PopupRounding      = CornerRadius;
++        s.ChildRounding      = 9.f;
++        s.FrameRounding      = 6.f;
++        s.PopupRounding      = 8.f;
+         s.ScrollbarRounding  = CornerRadius;
+         s.GrabRounding       = CornerRadius;
+ 
+@@ -409,8 +412,9 @@
+         s.FramePadding       = { 9.f, 6.f };
+         s.ItemSpacing        = { 10.f, 7.f };
+         s.ItemInnerSpacing   = { 6.f, 4.f };
+-        s.CellPadding        = { 8.f, 4.f };
+-        s.ScrollbarSize      = 5.f;
++        s.CellPadding        = { 9.f, 0.f };
++        s.ScrollbarSize      = 6.f;
++        s.DisabledAlpha      = .70f;
+         s.GrabMinSize        = 8.f;
+ 
+         RefreshAppearance();
+@@ -456,9 +460,9 @@
+ 
+     void RefreshAppearance()
+     {
+-        appearance.Opacity = SafeRange(appearance.Opacity, 0.65f, 1.f, 0.98f);
+-        appearance.Rounding = SafeRange(appearance.Rounding, 0.f, 32.f, 24.f);
+-        appearance.BorderStrength = SafeRange(appearance.BorderStrength, 0.05f, 0.45f, 0.16f);
++        appearance.Opacity = SafeRange(appearance.Opacity, 0.65f, 1.f, 1.f);
++        appearance.Rounding = SafeRange(appearance.Rounding, 0.f, 32.f, 14.f);
++        appearance.BorderStrength = SafeRange(appearance.BorderStrength, 0.05f, 0.45f, 0.18f);
+         if (appearance.Preset < 0 || appearance.Preset > 4) appearance.Preset = 4;
+         auto clean = [](ESP::Color4& c) {
+             c.r = SafeRange(c.r, 0.f, 1.f, 0.5f);
+@@ -487,18 +491,19 @@
+         palette.bgPanel = palette.glassPanel;
+         palette.bgCard = palette.glassCard;
+         palette.bgSidebar = palette.glassSidebar;
+-        palette.bgCardHi = mix(rgba(appearance.Surface, 1.f), palette.accent, 0.05f);
++        palette.bgCardHi = mix(rgba(appearance.Surface, 1.f), palette.accent, 0.055f);
+         palette.text = rgba(appearance.Text, 1.f);
+-        palette.textDim = mix(palette.text, rgba(appearance.Surface, 1.f), 0.42f);
+-        palette.border = rgba(appearance.Text, appearance.BorderStrength);
+-        palette.borderHi = rgba(appearance.Text, fminf(0.65f, appearance.BorderStrength * 1.5f));
++        palette.textDim = mix(palette.text, rgba(appearance.Surface, 1.f), 0.31f);
++        palette.border = mix(rgba(appearance.Surface, 1.f), palette.text, appearance.BorderStrength * .63f);
++        palette.borderHi = mix(rgba(appearance.Surface, 1.f), palette.text, appearance.BorderStrength * .92f);
+         palette.lineHard = palette.borderHi;
+-        palette.lineSoft = rgba(appearance.Text, appearance.BorderStrength * 0.5f);
++        palette.lineSoft = palette.border;
+         CornerRadius = appearance.Rounding;
+         ImGuiStyle& style = ImGui::GetStyle();
+-        style.WindowRounding = style.ChildRounding = CornerRadius;
+-        style.FrameRounding = fminf(CornerRadius, 20.f);
+-        style.PopupRounding = fminf(CornerRadius, 22.f);
++        style.WindowRounding = CornerRadius;
++        style.ChildRounding = fminf(CornerRadius, 9.f);
++        style.FrameRounding = fminf(CornerRadius, 6.f);
++        style.PopupRounding = fminf(CornerRadius, 8.f);
+         style.ScrollbarRounding = style.GrabRounding = fminf(CornerRadius, 6.f);
+         ImVec4* c = ImGui::GetStyle().Colors;
+         c[ImGuiCol_TitleBg] = palette.bgSidebar;
+@@ -580,16 +585,19 @@
+     bool NavButton(const char* id, Icon icon, const char* label, bool active)
+     {
+         ImGui::PushID(id);
+-        const ImVec2 p=ImGui::GetCursorScreenPos();const float w=Px(58.f),h=Px(58.f);
+-        const bool clicked=ImGui::InvisibleButton("##nav",{w,h});
++        const ImVec2 p=ImGui::GetCursorScreenPos();
++        const float w=ImGui::GetContentRegionAvail().x,h=Px(48.f);
++        const bool clicked=ImGui::InvisibleButton("##nav",{w,h},ImGuiButtonFlags_EnableNav);
+         auto* dl=ImGui::GetWindowDrawList();
+-        if(active||ImGui::IsItemHovered()) {
+-            dl->AddRectFilled(p,{p.x+w,p.y+h},ToU32(active?palette.accentSoft:palette.glassHover),Px(21.f));
+-            if(active)dl->AddRect(p,{p.x+w,p.y+h},ToU32(palette.borderHi),Px(21.f));
++        if(active||ImGui::IsItemHovered()){
++            dl->AddRectFilled(p,{p.x+w,p.y+h},ToU32(active?palette.accentSoft:palette.glassHover),Px(6.f));
++            if(active)dl->AddRect(p,{p.x+w,p.y+h},ToU32(palette.borderHi),Px(6.f));
+         }
+         const ImVec4 old=palette.accentHi;palette.accentHi=active?palette.accent:palette.textDim;
+-        DrawIcon(dl,icon,{p.x+w*.5f,p.y+h*.5f},Px(21.f));palette.accentHi=old;
+-        if(ImGui::IsItemHovered())ImGui::SetTooltip("%s",label);
++        DrawIcon(dl,icon,{p.x+Px(24.f),p.y+h*.5f},Px(18.f));palette.accentHi=old;
++        dl->AddText({p.x+Px(46.f),p.y+(h-ImGui::GetFontSize())*.5f},ToU32(active?palette.text:palette.textDim),label);
++        if(active)dl->AddCircleFilled({p.x+w-Px(16.f),p.y+h*.5f},Px(2.5f),ToU32(palette.accent));
++        if(ImGui::IsItemFocused())dl->AddRect(p,{p.x+w,p.y+h},ToU32(palette.accent),Px(6.f));
+         ImGui::PopID();return clicked;
+     }
+ 
+@@ -650,7 +658,7 @@
+     {
+         const SwitchVisual visual = AdvanceSwitchAnimation(id, value);
+         ImDrawList* dl = ImGui::GetWindowDrawList();
+-        ImVec4 track = { .27f, .31f, .40f, 1.f };
++        ImVec4 track = { .204f, .255f, .322f, 1.f };
+         track.x += (palette.accent.x - track.x) * visual.Position;
+         track.y += (palette.accent.y - track.y) * visual.Position;
+         track.z += (palette.accent.z - track.z) * visual.Position;
+@@ -665,14 +673,14 @@
+             ImGui::GetColorU32(ImVec4{ .03f, .06f, .12f, .18f }), radius);
+         dl->AddRectFilled({ centerX - radius - stretch, centerY - radius + stretch * .25f },
+             { centerX + radius + stretch, centerY + radius - stretch * .25f },
+-            ImGui::GetColorU32(ImVec4{ .97f, .98f, 1.f, 1.f }), radius);
++            ImGui::GetColorU32(ImVec4{ .65f+.29f*visual.Position, .71f+.25f*visual.Position, .79f+.21f*visual.Position, 1.f }), radius);
+     }
+ 
+     bool ToggleSwitch(const char* id, bool* value, float width)
+     {
+-        const ImVec2 p=ImGui::GetCursorScreenPos();const float h=Px(22.f);
++        const ImVec2 p=ImGui::GetCursorScreenPos();const float h=Px(19.f);
+         width=Px(width);
+-        const bool changed=ImGui::InvisibleButton(id,{width,h});if(changed)*value=!*value;
++        const bool changed=ImGui::InvisibleButton(id,{width,h},ImGuiButtonFlags_EnableNav);if(changed)*value=!*value;
+         DrawSmoothSwitch(id, *value, p, width, h);
+         return changed;
+     }
+@@ -703,7 +711,7 @@
+         ImGui::PushID(id);
+         const float w = ImGui::GetContentRegionAvail().x;
+ 
+-        ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, CornerRadius);
++        ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, fminf(CornerRadius,Px(9.f)));
+         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { Px(20.f), Px(18.f) });
+         ImGui::PushStyleColor(ImGuiCol_ChildBg, {0.f,0.f,0.f,0.f});
+         ImGui::PushStyleColor(ImGuiCol_Border, palette.border);
+@@ -716,17 +724,17 @@
+ 
+         const ImVec2 cp=ImGui::GetWindowPos(),cs=ImGui::GetWindowSize();
+         DrawGlassRect(ImGui::GetWindowDrawList(),cp,{cp.x+cs.x,cp.y+cs.y},palette.glassCard,false,true);
+-        ImGui::BeginGroup();
+-        ImGui::TextWrapped("%s",title);
++        if(title||subtitle)ImGui::BeginGroup();
++        if(title){if(fontHeading)ImGui::PushFont(fontHeading);ImGui::TextWrapped("%s",title);if(fontHeading)ImGui::PopFont();}
+         if (subtitle)
+         {
+             if (fontSmall) ImGui::PushFont(fontSmall);
+             ImGui::TextWrapped("%s", subtitle);
+             if (fontSmall) ImGui::PopFont();
+         }
+-        ImGui::EndGroup();
+-
+-        ImGui::Dummy({0.f,Px(8.f)});
++        if(title||subtitle)ImGui::EndGroup();
++
++        if(title)ImGui::Dummy({0.f,Px(8.f)});
+     }
+ 
+     void EndCard()
+@@ -736,7 +744,7 @@
+         ImGui::PopStyleColor(2);
+         ImGui::PopStyleVar(2);
+         ImGui::PopID();
+-        ImGui::Dummy({ 0.f, Px(8.f) });
++        ImGui::Dummy({ 0.f, Px(4.f) });
+     }
+ 
+     void InfoText(const char* text)
+@@ -775,7 +783,7 @@
+     bool SliderFloatRow(const char* label, float* v, float min, float max, const char* fmt)
+     {
+         ImGui::PushID(label);
+-        const float rowW = ImGui::GetContentRegionAvail().x;
++        const float rowW = fmaxf(Px(24.f),ImGui::GetContentRegionAvail().x-Px(6.f));
+         const float startX = ImGui::GetCursorPosX();
+         const float labelRowY = ImGui::GetCursorPosY();
+ 
+@@ -830,12 +838,12 @@
+         ImGui::TextWrapped("%s", label);HelpLastItem(label);
+         ImGui::PopStyleColor();
+         if (fontSmall) ImGui::PopFont();
+-        ImGui::SetNextItemWidth(-1.f);
+-        ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.f);
++        ImGui::SetNextItemWidth(fmaxf(Px(24.f),ImGui::GetContentRegionAvail().x-Px(8.f)));
++        ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.f);
+         ImGui::PushStyleColor(ImGuiCol_FrameBg, palette.bgCardHi);
+         ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, palette.glassHover);
+         ImGui::PushStyleColor(ImGuiCol_FrameBgActive, palette.accentSoft);
+-        ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.f, 0.f, 0.f, 0.f));
++        ImGui::PushStyleColor(ImGuiCol_Border, palette.borderHi);
+         ImGui::PushStyleColor(ImGuiCol_Header, { 1.f, 1.f, 1.f, 0.08f });
+         ImGui::PushStyleColor(ImGuiCol_HeaderHovered, { 1.f, 1.f, 1.f, 0.12f });
+         ImGui::PushStyleColor(ImGuiCol_HeaderActive, palette.accentSoft);
+@@ -851,17 +859,17 @@
+     {
+         ImGui::PushID(label);const ImVec2 p=ImGui::GetCursorScreenPos();
+         const float w=ImGui::GetContentRegionAvail().x;
+-        const float labelW=fmaxf(Px(30.f),w-Px(76.f));
++        const float labelW=fmaxf(Px(24.f),w-Px(48.f));
+         const ImVec2 ts=ImGui::CalcTextSize(label,nullptr,false,labelW);
+         const float h=fmaxf(Px(36.f),ts.y+Px(12.f));
+-        const bool changed=ImGui::InvisibleButton("##row",{w,h});if(changed)*value=!*value;
++        const bool changed=ImGui::InvisibleButton("##row",{w,h},ImGuiButtonFlags_EnableNav);
++        if(changed)*value=!*value;
+         HelpLastItem(label);
+         auto* dl=ImGui::GetWindowDrawList();
+         dl->AddText(ImGui::GetFont(),ImGui::GetFontSize(),{p.x,p.y+(h-ts.y)*.5f},ImGui::GetColorU32(palette.text),label,nullptr,labelW);
+-        if(comfort.Tooltips&&ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))dl->AddText({p.x+w-Px(60.f),p.y+(h-ImGui::GetFontSize())*.5f},ImGui::GetColorU32(palette.textDim),"?");
+-        DrawSmoothSwitch("##switch_animation", *value,
+-            { p.x + w - Px(43.f), p.y + h * .5f - Px(13.f) }, Px(43.f), Px(26.f));
+-        dl->AddLine({p.x,p.y+h+Px(3.f)},{p.x+w,p.y+h+Px(3.f)},ToU32(palette.lineSoft));
++        DrawSmoothSwitch("##switch_animation",*value,{p.x+w-Px(32.f),p.y+(h-Px(19.f))*.5f},Px(32.f),Px(19.f));
++        dl->AddLine({p.x,p.y+h+Px(3.f)},{p.x+w,p.y+h+Px(3.f)},ImGui::GetColorU32(palette.lineSoft),Px(1.f));
++        if(ImGui::IsItemFocused())dl->AddRect(p,{p.x+w,p.y+h},ImGui::GetColorU32(palette.accent),Px(3.f));
+         ImGui::PopID();return changed;
+     }
+ 
+@@ -1028,10 +1036,10 @@
+                       const ImVec4& color, ImVec2 size)
+     {
+         ImGui::PushID(id);
+-        ImGui::PushStyleColor(ImGuiCol_Button, { color.x, color.y, color.z, 0.12f });
+-        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { color.x, color.y, color.z, 0.22f });
+-        ImGui::PushStyleColor(ImGuiCol_ButtonActive, { color.x, color.y, color.z, 0.32f });
+-        ImGui::PushStyleColor(ImGuiCol_Border, { color.x, color.y, color.z, 0.45f });
++        ImGui::PushStyleColor(ImGuiCol_Button, palette.bgDeep);
++        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, palette.glassHover);
++        ImGui::PushStyleColor(ImGuiCol_ButtonActive, palette.accentSoft);
++        ImGui::PushStyleColor(ImGuiCol_Border, palette.borderHi);
+         ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.f);
+ 
+         if (size.x <= 0.f) size.x = 136.f;
+--- a/ui/theme.h
++++ b/ui/theme.h
+@@ -4,8 +4,8 @@
+ 
+ namespace UITheme
+ {
+-    inline constexpr float SidebarWidth = 92.f;
+-    inline float CornerRadius = 24.f;
++    inline constexpr float SidebarWidth = 220.f;
++    inline float CornerRadius = 14.f;
+ 
+     inline constexpr const char* BrandName     = "ALWAYSLOSE";
+     inline constexpr const char* BrandSubtitle = "SMITE 2 INTERNAL";
+@@ -31,42 +31,42 @@
+ 
+     struct Palette
+     {
+-        ImVec4 accent       = { 1.00f, 1.00f, 1.00f, 1.00f };
+-        ImVec4 accentHi     = { 1.00f, 1.00f, 1.00f, 1.00f };
+-        ImVec4 accentSoft   = { 1.00f, 1.00f, 1.00f, 0.10f };
+-        ImVec4 accentLine   = { 1.00f, 1.00f, 1.00f, 0.55f };
+-        ImVec4 glassDeep    = { 0.00f, 0.00f, 0.00f, 0.76f };
+-        ImVec4 glassPanel   = { 0.00f, 0.00f, 0.00f, 0.50f };
+-        ImVec4 glassCard    = { 0.00f, 0.00f, 0.00f, 0.34f };
+-        ImVec4 glassSidebar = { 0.00f, 0.00f, 0.00f, 0.58f };
+-        ImVec4 glassHover   = { 1.00f, 1.00f, 1.00f, 0.04f };
+-        ImVec4 lineHard     = { 1.00f, 1.00f, 1.00f, 0.14f };
+-        ImVec4 lineSoft     = { 1.00f, 1.00f, 1.00f, 0.06f };
++        ImVec4 accent       = { .663f, .761f, .949f, 1.f };
++        ImVec4 accentHi     = { .737f, .816f, .980f, 1.f };
++        ImVec4 accentSoft   = { .663f, .761f, .949f, .14f };
++        ImVec4 accentLine   = { .663f, .761f, .949f, .6f };
++        ImVec4 glassDeep    = { .063f, .082f, .110f, 1.f };
++        ImVec4 glassPanel   = { .063f, .082f, .110f, 1.f };
++        ImVec4 glassCard    = { .094f, .122f, .157f, 1.f };
++        ImVec4 glassSidebar = { .055f, .075f, .102f, 1.f };
++        ImVec4 glassHover   = { .663f, .761f, .949f, .08f };
++        ImVec4 lineHard     = { .184f, .235f, .298f, 1.f };
++        ImVec4 lineSoft     = { .184f, .235f, .298f, .85f };
+         ImVec4 bgDeep       = glassDeep;
+         ImVec4 bgPanel      = glassPanel;
+         ImVec4 bgCard       = glassCard;
+-        ImVec4 bgCardHi     = { 0.00f, 0.00f, 0.00f, 0.44f };
++        ImVec4 bgCardHi     = { .125f, .165f, .216f, 1.f };
+         ImVec4 bgSidebar    = glassSidebar;
+-        ImVec4 border       = { 1.00f, 1.00f, 1.00f, 0.11f };
+-        ImVec4 borderHi     = { 1.00f, 1.00f, 1.00f, 0.20f };
+-        ImVec4 text         = { 0.96f, 0.97f, 0.99f, 1.00f };
+-        ImVec4 textDim      = { 0.52f, 0.54f, 0.58f, 1.00f };
+-        ImVec4 success      = { 0.22f, 0.92f, 0.56f, 1.00f };
+-        ImVec4 danger       = { 0.96f, 0.34f, 0.40f, 1.00f };
+-        ImVec4 warning      = { 0.98f, 0.76f, 0.28f, 1.00f };
++        ImVec4 border       = { .184f, .235f, .298f, 1.f };
++        ImVec4 borderHi     = { .227f, .290f, .369f, 1.f };
++        ImVec4 text         = { .910f, .925f, .949f, 1.f };
++        ImVec4 textDim      = { .647f, .710f, .788f, 1.f };
++        ImVec4 success      = { .478f, .788f, .682f, 1.f };
++        ImVec4 danger       = { .949f, .475f, .510f, 1.f };
++        ImVec4 warning      = { .910f, .745f, .482f, 1.f };
+     };
+ 
+     struct AppearanceSettings
+     {
+         int Preset = 4; // Ocean=0, Violet=1, Emerald=2, Graphite=3, Midnight=4 (stable IDs)
+-        ESP::Color4 Accent = { 0.541f, 0.655f, 1.000f, 1.f };
+-        ESP::Color4 Background = { 0.055f, 0.083f, 0.153f, 1.f };
+-        ESP::Color4 Surface = { 0.112f, 0.149f, 0.235f, 1.f };
+-        ESP::Color4 Sidebar = { 0.063f, 0.094f, 0.169f, 1.f };
+-        ESP::Color4 Text = { 0.929f, 0.941f, 0.984f, 1.f };
+-        float Opacity = 0.98f;
+-        float Rounding = 24.f;
+-        float BorderStrength = 0.14f;
++        ESP::Color4 Accent = { .663f, .761f, .949f, 1.f };
++        ESP::Color4 Background = { .063f, .082f, .110f, 1.f };
++        ESP::Color4 Surface = { .094f, .122f, .157f, 1.f };
++        ESP::Color4 Sidebar = { .055f, .075f, .102f, 1.f };
++        ESP::Color4 Text = { .910f, .925f, .949f, 1.f };
++        float Opacity = 1.f;
++        float Rounding = 14.f;
++        float BorderStrength = 0.18f;
+     };
+     struct ComfortSettings
+     {
+@@ -90,6 +90,7 @@
+     extern Palette palette;
+     extern ImFont* fontRegular;
+     extern ImFont* fontTitle;
++    extern ImFont* fontHeading;
+     extern ImFont* fontSmall;
+     extern ImFont* fontBrand;
+ 
+@@ -129,7 +130,7 @@
+     void DrawMenuParticles(ImDrawList* dl, ImVec2 min, ImVec2 max);
+ 
+     bool NavButton(const char* id, Icon icon, const char* label, bool active);
+-    bool ToggleSwitch(const char* id, bool* value, float width = 38.f);
++    bool ToggleSwitch(const char* id, bool* value, float width = 32.f);
+     void FeatureMaster(Icon icon, const char* title, const char* subtitle, bool* enabled = nullptr);
+ 
+     void BeginCard(const char* id, Icon icon, const char* title, const char* subtitle = nullptr, float minHeight = 0.f);
+--- a/core/performance.h
++++ b/core/performance.h
+@@ -1,5 +1,6 @@
+ #pragma once
+ #include "../imgui/imgui.h"
++#include "../ui/theme.h"
+ #include <chrono>
+ #include <array>
+ #include <algorithm>
+@@ -49,11 +50,11 @@
+     template<class F> inline void Measure(Part p, F&& f) { Scope scope(p); f(); }
+     inline void Controls()
+     {
+-        ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
+-        ImGui::TextUnformatted("Performance diagnostics (CPU)");
+-        if (ImGui::Checkbox("Enable timing", &enabled)) Reset();
+-        ImGui::Checkbox("Show timing overlay", &showOverlay);
+-        ImGui::TextWrapped("Enable timing, close the menu, wait 5 seconds and take a screenshot. Timings are CPU time per frame, not GPU time or total game frametime.");
++        UITheme::BeginCard("performance_controls",UITheme::Icon::Info,"Performance diagnostics (CPU)");
++        if(UITheme::CheckboxRow("Enable timing",&enabled))Reset();
++        UITheme::CheckboxRow("Show timing overlay",&showOverlay);
++        UITheme::InfoText("Enable timing, close the menu, wait 5 seconds and take a screenshot. Timings are CPU time per frame, not GPU time or total game frametime.");
++        UITheme::EndCard();
+     }
+     inline void DrawOverlay()
+     {
+--- a/features/config.cpp
++++ b/features/config.cpp
+@@ -345,7 +345,7 @@
+ 
+         w.ss << "  \"menu\": {\n";
+         w.indent = 2;
+-        w.Int("menu_design_version", 4);
++        w.Int("menu_design_version", 5);
+         const auto hud=StatusOverlay::GetConfig();
+         w.Bool("death_camera_enabled",DeathCamera::GetConfig().Enabled);
+         w.Bool("show_fps",hud.ShowFps);
+@@ -641,7 +641,7 @@
+             AutoDagger::Reset();
+             int designVersion = 0;
+             ReadInt(menuJson, "menu_design_version", designVersion);
+-            if (designVersion >= 4)
++            if (designVersion >= 5)
+             {
+                 ReadInt(menuJson, "theme_preset", UITheme::appearance.Preset);
+                 ReadColor(menuJson, "theme_accent", UITheme::appearance.Accent);

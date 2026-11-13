@@ -1,0 +1,19 @@
+{
+  "CHANGES.diff": "8f5a14935242f250346308a09b2cfa14f1eb59f02bb37ff64bf402dbb1a25e97",
+  "ORIGINAL_SHA256.json": "1cac04fe5d62dd1ed0a77ed95c9d894752c2467ef8a574b1c459827a01c5f79f",
+  "QA_RESULTS.txt": "072fb618c47e5c88b2f18c4634f05f10821e5dcc2938a5fad4947db367d5d586",
+  "README_RU.txt": "aae6ff9a4fc00792d0014c673587e9555ffcb550634b3ced2bafdee326cec782",
+  "Trainer.vcxproj": "168c0a7f283a7366993643faa5d9a5fdcf11a4914bb1ab3e7b4f5f49d420504c",
+  "Trainer.vcxproj.filters": "ba7ea19ef028fc3534b601ebb19f323260100e3aa8f0fababa7caafe7eba46f2",
+  "core/dll_main.cpp": "ba20936289df600e1842629e1c084db53f09d046eb92f840677dddda9c5e562a",
+  "features/config.cpp": "87f4641c116e34cdfdb24ab79ded9164f67bd62c04a4aa27bc1a269796c881de",
+  "features/time_dilation.cpp": "917920ff4b8a15d8d77a9b6780eb73534d3b5c5eba018791a78473b504d2b175",
+  "features/time_dilation.h": "a6a3761198b9438e063bd28e76258b73cfb6f23f9863e51d69e19466b85d3b4a",
+  "features/time_dilation_logic.h": "651bc829d653c3af95d759abf3f7a09a00a434737464e63786ec97cd64fa0d62",
+  "features/world_environment.cpp": "67e16a8a5c896ed5be20412f4911601f7f95f055fbab8b53a2c0da331eaab508",
+  "qa/README.txt": "a404f69b3ad6f6b0a341728c5b1314bbd8f8a21ecd04c2cf5fe1832168316795",
+  "qa/Windows.h": "bf8957a3e74612a9623a751913461578eea1a29ea0be91053c0e09806c668462",
+  "qa/mocks.h": "fe01dac47a22a0ae7d911f28f5d5461a3a18e36e42cc0cedb10eb567c177e8f0",
+  "qa/module.cpp": "a3655ccb1966db2c9be91f5f8c51b5e893ce1fd56181c87daa88c69e65b849d2",
+  "qa/test.cpp": "683738a10b2dbd34ef5e1e24be213fa9566f01dcc0de2ecac92da3efd635a9ca"
+}

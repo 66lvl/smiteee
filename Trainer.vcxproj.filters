@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="core">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="features">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{A1E8B5C2-3D4F-4E6A-9B7C-1F2E3D4C5B6A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="minhook">
+      <UniqueIdentifier>{B2F9C6D3-4E5F-5F7B-AC8D-2F3E4D5C6B7A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{C3A0D7E4-5F60-6A8C-BD9E-3A4B5C6D7E8C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CppSDK">
+      <UniqueIdentifier>{D4B1E8F5-6071-7B9D-CE0F-4B5C6D7E8F9D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CppSDK\SDK">
+      <UniqueIdentifier>{E5C2F906-7182-8C0E-DF10-5C6D7E8F901E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="core\pch.cpp"><Filter>core</Filter></ClCompile>
+    <ClCompile Include="core\bones.cpp"><Filter>core</Filter></ClCompile>
+    <ClCompile Include="core\dll_main.cpp"><Filter>core</Filter></ClCompile>
+    <ClCompile Include="core\gamepad_input.cpp"><Filter>core</Filter></ClCompile>
+    <ClCompile Include="core\game_state.cpp"><Filter>core</Filter></ClCompile>
+    <ClCompile Include="core\hooks.cpp"><Filter>core</Filter></ClCompile>
+    <ClCompile Include="core\pawn_filter.cpp"><Filter>core</Filter></ClCompile>
+    <ClCompile Include="core\render_backend.cpp"><Filter>core</Filter></ClCompile>
+    <ClCompile Include="core\renderer.cpp"><Filter>core</Filter></ClCompile>
+    <ClCompile Include="core\renderer_dx11.cpp"><Filter>core</Filter></ClCompile>
+    <ClCompile Include="core\sdk_helpers.cpp"><Filter>core</Filter></ClCompile>
+    <ClCompile Include="features\ability_cd_ui.cpp"><Filter>features</Filter></ClCompile>
+    <ClCompile Include="features\ability_icons.cpp"><Filter>features</Filter></ClCompile>
+    <ClCompile Include="features\aimbot.cpp"><Filter>features</Filter></ClCompile>
+    <ClCompile Include="features\camera.cpp"><Filter>features</Filter></ClCompile>
+    <ClCompile Include="features\config.cpp"><Filter>features</Filter></ClCompile>
+    <ClCompile Include="features\cooldown_window.cpp"><Filter>features</Filter></ClCompile>
+    <ClCompile Include="features\esp.cpp"><Filter>features</Filter></ClCompile>
+    <ClCompile Include="features\esp_cooldown_seh.cpp"><Filter>features</Filter></ClCompile>
+    <ClCompile Include="features\icon_fetch.cpp"><Filter>features</Filter></ClCompile>
+    <ClCompile Include="features\maphack.cpp"><Filter>features</Filter></ClCompile>
+    <ClCompile Include="features\skin_changer.cpp"><Filter>features</Filter></ClCompile>
+    <ClCompile Include="features\skin_changer_seh.cpp"><Filter>features</Filter></ClCompile>
+    <ClCompile Include="ui\menu.cpp"><Filter>ui</Filter></ClCompile>
+    <ClCompile Include="ui\theme.cpp"><Filter>ui</Filter></ClCompile>
+    <ClCompile Include="imgui\imgui.cpp"><Filter>imgui</Filter></ClCompile>
+    <ClCompile Include="imgui\imgui_draw.cpp"><Filter>imgui</Filter></ClCompile>
+    <ClCompile Include="imgui\imgui_tables.cpp"><Filter>imgui</Filter></ClCompile>
+    <ClCompile Include="imgui\imgui_widgets.cpp"><Filter>imgui</Filter></ClCompile>
+    <ClCompile Include="imgui\imgui_impl_win32.cpp"><Filter>imgui</Filter></ClCompile>
+    <ClCompile Include="imgui\imgui_impl_dx11.cpp"><Filter>imgui</Filter></ClCompile>
+    <ClCompile Include="imgui\imgui_impl_dx12.cpp"><Filter>imgui</Filter></ClCompile>
+    <ClCompile Include="CppSDK\SDK\Basic.cpp"><Filter>CppSDK\SDK</Filter></ClCompile>
+    <ClCompile Include="CppSDK\SDK\CoreUObject_functions.cpp"><Filter>CppSDK\SDK</Filter></ClCompile>
+    <ClCompile Include="CppSDK\SDK\Engine_functions.cpp"><Filter>CppSDK\SDK</Filter></ClCompile>
+    <ClCompile Include="CppSDK\SDK\Hemingway_functions.cpp"><Filter>CppSDK\SDK</Filter></ClCompile>
+    <ClCompile Include="CppSDK\SDK\GameplayAbilities_functions.cpp"><Filter>CppSDK\SDK</Filter></ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="core\pch.h"><Filter>core</Filter></ClInclude>
+    <ClInclude Include="core\smite_sdk.h"><Filter>core</Filter></ClInclude>
+    <ClInclude Include="core\bones.h"><Filter>core</Filter></ClInclude>
+    <ClInclude Include="core\game_state.h"><Filter>core</Filter></ClInclude>
+    <ClInclude Include="core\gamepad_input.h"><Filter>core</Filter></ClInclude>
+    <ClInclude Include="core\hooks.h"><Filter>core</Filter></ClInclude>
+    <ClInclude Include="core\pawn_filter.h"><Filter>core</Filter></ClInclude>
+    <ClInclude Include="core\render_backend.h"><Filter>core</Filter></ClInclude>
+    <ClInclude Include="core\renderer.h"><Filter>core</Filter></ClInclude>
+    <ClInclude Include="core\renderer_dx11.h"><Filter>core</Filter></ClInclude>
+    <ClInclude Include="core\sdk_helpers.h"><Filter>core</Filter></ClInclude>
+    <ClInclude Include="features\ability_cd_ui.h"><Filter>features</Filter></ClInclude>
+    <ClInclude Include="features\ability_icons.h"><Filter>features</Filter></ClInclude>
+    <ClInclude Include="features\aimbot.h"><Filter>features</Filter></ClInclude>
+    <ClInclude Include="features\camera.h"><Filter>features</Filter></ClInclude>
+    <ClInclude Include="features\config.h"><Filter>features</Filter></ClInclude>
+    <ClInclude Include="features\cooldown_window.h"><Filter>features</Filter></ClInclude>
+    <ClInclude Include="features\esp.h"><Filter>features</Filter></ClInclude>
+    <ClInclude Include="features\esp_cooldown_seh.h"><Filter>features</Filter></ClInclude>
+    <ClInclude Include="features\icon_fetch.h"><Filter>features</Filter></ClInclude>
+    <ClInclude Include="features\maphack.h"><Filter>features</Filter></ClInclude>
+    <ClInclude Include="features\skin_changer.h"><Filter>features</Filter></ClInclude>
+    <ClInclude Include="features\skin_changer_seh.h"><Filter>features</Filter></ClInclude>
+    <ClInclude Include="ui\menu.h"><Filter>ui</Filter></ClInclude>
+    <ClInclude Include="ui\theme.h"><Filter>ui</Filter></ClInclude>
+    <ClInclude Include="imgui\imgui.h"><Filter>imgui</Filter></ClInclude>
+    <ClInclude Include="imgui\imconfig.h"><Filter>imgui</Filter></ClInclude>
+    <ClInclude Include="imgui\imgui_internal.h"><Filter>imgui</Filter></ClInclude>
+    <ClInclude Include="imgui\imgui_impl_dx11.h"><Filter>imgui</Filter></ClInclude>
+    <ClInclude Include="imgui\imgui_impl_dx12.h"><Filter>imgui</Filter></ClInclude>
+    <ClInclude Include="imgui\imgui_impl_win32.h"><Filter>imgui</Filter></ClInclude>
+    <ClInclude Include="minhook\MinHook.h"><Filter>minhook</Filter></ClInclude>
+    <ClInclude Include="resources\resource.h"><Filter>resources</Filter></ClInclude>
+    <ClInclude Include="CppSDK\SDK.hpp"><Filter>CppSDK</Filter></ClInclude>
+    <ClInclude Include="CppSDK\PropertyFixup.hpp"><Filter>CppSDK</Filter></ClInclude>
+    <ClInclude Include="CppSDK\UnrealContainers.hpp"><Filter>CppSDK</Filter></ClInclude>
+    <ClInclude Include="CppSDK\UtfN.hpp"><Filter>CppSDK</Filter></ClInclude>
+    <ClInclude Include="CppSDK\NameCollisions.inl"><Filter>CppSDK</Filter></ClInclude>
+    <ClInclude Include="CppSDK\SDK\Basic.hpp"><Filter>CppSDK\SDK</Filter></ClInclude>
+    <ClInclude Include="CppSDK\SDK\CoreUObject_classes.hpp"><Filter>CppSDK\SDK</Filter></ClInclude>
+    <ClInclude Include="CppSDK\SDK\CoreUObject_structs.hpp"><Filter>CppSDK\SDK</Filter></ClInclude>
+    <ClInclude Include="CppSDK\SDK\Engine_classes.hpp"><Filter>CppSDK\SDK</Filter></ClInclude>
+    <ClInclude Include="CppSDK\SDK\Engine_structs.hpp"><Filter>CppSDK\SDK</Filter></ClInclude>
+    <ClInclude Include="CppSDK\SDK\Hemingway_classes.hpp"><Filter>CppSDK\SDK</Filter></ClInclude>
+    <ClInclude Include="CppSDK\SDK\Hemingway_structs.hpp"><Filter>CppSDK\SDK</Filter></ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="features\auto_laugh.cpp"><Filter>features</Filter></ClCompile>
+    <ClInclude Include="features\auto_laugh.h"><Filter>features</Filter></ClInclude>
+    <ClInclude Include="features\auto_laugh_logic.h"><Filter>features</Filter></ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="features\night_sky.cpp"><Filter>features</Filter></ClCompile>
+    <ClInclude Include="features\night_sky.h"><Filter>features</Filter></ClInclude>
+    <ClCompile Include="features\sky_inspector.cpp"><Filter>features</Filter></ClCompile>
+    <ClInclude Include="features\sky_inspector.h"><Filter>features</Filter></ClInclude>
+    <ClCompile Include="features\world_environment.cpp"><Filter>features</Filter></ClCompile>
+    <ClInclude Include="features\world_environment.h"><Filter>features</Filter></ClInclude>
+    <ClInclude Include="features\world_environment_logic.h"><Filter>features</Filter></ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="features\time_dilation.cpp"><Filter>features</Filter></ClCompile>
+    <ClInclude Include="features\time_dilation.h"><Filter>features</Filter></ClInclude>
+    <ClInclude Include="features\time_dilation_logic.h"><Filter>features</Filter></ClInclude>
+  </ItemGroup>
+</Project>

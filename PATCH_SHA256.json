@@ -1,0 +1,14 @@
+{
+  "CppSDK/SDK/ComputeFramework_structs.hpp": "f522688d7f7e5036350866d123df0c37674c62a98b6fbd03cd1f42082f3b02cd",
+  "CppSDK/SDK/ControlRig_structs.hpp": "327720b369bcd66a10599423fd69fc167828278de501e6f1156e88884238b187",
+  "CppSDK/SDK/Engine_structs.hpp": "b8ec4fc4aa8c8bac6d74d9ce9162a9524e357d1344ed4d42df1ab7cc32c28905",
+  "CppSDK/SDK/GameplayAbilities_parameters.hpp": "c3a3d13f808a93d5256ec563ef6518494bf95c3eb5a8317c7ea585d38000f2e8",
+  "CppSDK/SDK/GameplayTags_parameters.hpp": "20aa5a647b6650db0a0bfeba5a8b2905000f6d4d5a04eb4818092bf89c22e3c9",
+  "CppSDK/SDK/GeometryFramework_structs.hpp": "a5aa8d1432cbf4ed05b14dbf460991dd350a69e35ae4629523a9f216192c2a5d",
+  "CppSDK/SDK/HeadMountedDisplay_structs.hpp": "dece0d7a2ed446e370e29c9d3e134e75179ce8daaaf7d5db15db2678a3da204a",
+  "CppSDK/SDK/HemingwayUI_structs.hpp": "24e2f6ff5287316ac4461c08fe1a174daa38c47b5e5389c26152467a3707c4dc",
+  "CppSDK/SDK/Hemingway_structs.hpp": "bbaab573a6fd1ece05e65671c78f38b651170ba58a6ea815a14f97c4944238fb",
+  "CppSDK/SDK/InterchangeNodes_structs.hpp": "4e6c863840b9403eedfa4dff62d88c5c33d1876d385281c47d5ba119eef11034",
+  "CppSDK/SDK/Niagara_structs.hpp": "1b4c4081e23e876f41d4c39435b5ce3850656e187d1e66aa36bd979dd9095e99",
+  "CppSDK/SDK/PCG_structs.hpp": "eb70e9e416130e0c5501f43c4ccd32910d0627bc1ae36d41d15c281cdc01836b"
+}

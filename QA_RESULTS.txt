@@ -1,0 +1,11 @@
+PASS: isolated GCC C++20 -Wall -Wextra -Werror test of the NEW feature module.
+Win32/SDK/UI replaced by mocks; __try/__except modeled as C++ try/catch, NOT real SEH validation.
+PASS: default off; finite multiplier normalization; invalid bounds; captured baseline restore (.8, not hardcoded 1).
+PASS: adjust multiplier while active; world limits; multiplier=1 restores/no write.
+PASS: external overwrite yields/disables; no overwrite of new game value.
+PASS: focus loss; world switch; object removal; spectating rejection; suspending restore.
+PASS: simulated registry access fault retains pending lease until restore succeeds.
+PASS: XML project/filter entries; dispatcher service/stop/unload gates; SDK field declaration checks.
+PASS: hooks.cpp/renderer.cpp not included or modified by patch.
+NOT TESTED: full project MSVC build, Windows SEH/ABI, actual window/game thread identity,
+real object lifetime races, game behavior, server acceptance, movement speed or damage.

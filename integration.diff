@@ -1,0 +1,210 @@
+--- a/Trainer.vcxproj
++++ b/Trainer.vcxproj
+@@ -109,6 +109,7 @@
+     <ClCompile Include="features\ability_icons.cpp" />
+     <ClCompile Include="features\aimbot.cpp" />
+     <ClCompile Include="features\auto_dagger.cpp" />
++    <ClCompile Include="features\world_environment.cpp" />
+     <ClCompile Include="features\auto_laugh.cpp" />
+     <ClCompile Include="features\auto_pick.cpp" />
+     <ClCompile Include="features\death_camera.cpp" />
+@@ -153,6 +154,8 @@
+     <ClInclude Include="features\ability_icons.h" />
+     <ClInclude Include="features\aimbot.h" />
+     <ClInclude Include="features\auto_dagger.h" />
++    <ClInclude Include="features\world_environment.h" />
++    <ClInclude Include="features\world_environment_logic.h" />
+     <ClInclude Include="features\auto_laugh.h" />
+     <ClInclude Include="features\auto_laugh_logic.h" />
+     <ClInclude Include="features\auto_pick.h" />
+--- a/Trainer.vcxproj.filters
++++ b/Trainer.vcxproj.filters
+@@ -114,4 +114,9 @@
+     <ClInclude Include="features\auto_laugh.h"><Filter>features</Filter></ClInclude>
+     <ClInclude Include="features\auto_laugh_logic.h"><Filter>features</Filter></ClInclude>
+   </ItemGroup>
++  <ItemGroup>
++    <ClCompile Include="features\world_environment.cpp"><Filter>features</Filter></ClCompile>
++    <ClInclude Include="features\world_environment.h"><Filter>features</Filter></ClInclude>
++    <ClInclude Include="features\world_environment_logic.h"><Filter>features</Filter></ClInclude>
++  </ItemGroup>
+ </Project>
+--- a/core/dll_main.cpp
++++ b/core/dll_main.cpp
+@@ -1,3 +1,4 @@
++#include "../features/world_environment.h"
+ #include "../features/auto_laugh.h"
+ #include "../features/death_camera.h"
+ #include "../features/status_overlay.h"
+@@ -62,14 +63,19 @@
+         while (true)
+         {
+             if (GetAsyncKeyState(VK_END) & 1) {
+-                if (DeathCamera::PrepareUnload()) break;
+-                printf("[!] Camera restore pending. Use native spectate controls / respawn, then END again.\n");
++                const bool environmentReady=WorldEnvironment::PrepareUnload();
++                const bool cameraReady=DeathCamera::PrepareUnload();
++                if(environmentReady&&cameraReady)break;
++                WorldEnvironment::CancelUnload();
++                if(!environmentReady)printf("[!] Environment restore pending. Disable night look and return to gameplay before END.\n");
++                if(!cameraReady)printf("[!] Camera restore pending. Use native spectate controls / respawn, then END again.\n");
+             }
+             Sleep(100);
+         }
+ 
+         printf("[*] Unloading ALWAYSLOSE...\n");
+         // Profile writes are explicit (Save / Save changes). Never persist an unsaved reset on END.
++        WorldEnvironment::Shutdown();
+         AutoLaugh::Shutdown();
+         GamepadInput::Shutdown();
+         DeathCamera::Shutdown();
+--- a/core/renderer.cpp
++++ b/core/renderer.cpp
+@@ -1,3 +1,4 @@
++#include "../features/world_environment.h"
+ #include "../features/auto_laugh.h"
+ #include "../features/death_camera.h"
+ #include "../features/status_overlay.h"
+@@ -123,6 +124,7 @@
+ 
+     static LRESULT WINAPI WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+     {
++        if (WorldEnvironment::HandleWindowMessage(hwnd, msg, wParam, lParam)) return 0;
+         if (AutoLaugh::HandleWindowMessage(hwnd, msg, wParam, lParam)) return 0;
+         if (DeathCamera::HandleWindowMessage(hwnd, msg, wParam, lParam)) return 0;
+         if (StatusOverlay::HandleWindowMessage(hwnd, msg, wParam, lParam)) return 0;
+--- a/core/renderer_dx11.cpp
++++ b/core/renderer_dx11.cpp
+@@ -1,3 +1,4 @@
++#include "../features/world_environment.h"
+ #include "../features/auto_laugh.h"
+ #include "../features/death_camera.h"
+ #include "../features/status_overlay.h"
+@@ -76,6 +77,7 @@
+ 
+     static LRESULT WINAPI WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+     {
++        if (WorldEnvironment::HandleWindowMessage(hwnd, msg, wParam, lParam)) return 0;
+         if (AutoLaugh::HandleWindowMessage(hwnd, msg, wParam, lParam)) return 0;
+         if (DeathCamera::HandleWindowMessage(hwnd, msg, wParam, lParam)) return 0;
+         if (StatusOverlay::HandleWindowMessage(hwnd, msg, wParam, lParam)) return 0;
+--- a/features/config.cpp
++++ b/features/config.cpp
+@@ -1,3 +1,4 @@
++#include "world_environment.h"
+ #include "auto_laugh.h"
+ #include "death_camera.h"
+ #include "status_overlay.h"
+@@ -273,6 +274,14 @@
+         w.indent = 1;
+         w.ss << "  },\n";
+ 
++        const auto environment=WorldEnvironment::GetConfig();
++        w.ss << "  \"world_environment\": {\n";
++        w.indent=2;
++        w.Bool("night_enabled",environment.NightEnabled);
++        w.Float("night_strength",environment.Strength);
++        w.Float("coolness",environment.Coolness);
++        w.indent=1;w.ss << "  },\n";
++
+         // MapHack
+         w.ss << "  \"maphack\": {\n";
+         w.indent = 2;
+@@ -383,7 +392,7 @@
+         const size_t last = json.find_last_not_of(" \t\r\n");
+         if (first == std::string::npos || json[first] != '{' || json[last] != '}') return false;
+         bool recognized = false;
+-        for (const char* section : {"esp", "aimbot", "maphack", "camera", "menu"})
++        for (const char* section : {"esp", "aimbot", "maphack", "camera", "menu", "world_environment"})
+             recognized = recognized || !ExtractSection(json, section).empty();
+         if (!recognized) return false;
+ 
+@@ -519,6 +528,16 @@
+             ReadBool (aimJson, "enemy_only",        Aimbot::cfg.TeamCheck);
+         }
+ 
++        WorldEnvironment::Config environment{};
++        const auto environmentJson=ExtractSection(json,"world_environment");
++        if(!environmentJson.empty())
++        {
++            ReadBool(environmentJson,"night_enabled",environment.NightEnabled);
++            ReadFloat(environmentJson,"night_strength",environment.Strength);
++            ReadFloat(environmentJson,"coolness",environment.Coolness);
++        }
++        WorldEnvironment::SetConfig(environment); // Old profiles safely default to disabled.
++
+         // --- MapHack ---
+         std::string mapJson = ExtractSection(json, "maphack");
+         if (!mapJson.empty())
+@@ -603,6 +622,7 @@
+         if(all||target==ResetTarget::Visuals) ::ESP::cfg = ::ESP::Config{};
+         if(all||target==ResetTarget::Combat){::Aimbot::cfg = ::Aimbot::Config{};Aimbot::ResetState();}
+         if(all||target==ResetTarget::Map) ::MapHack::cfg = ::MapHack::Config{};
++        if(all||target==ResetTarget::Environment) WorldEnvironment::SetConfig(WorldEnvironment::Config{});
+         if(all||target==ResetTarget::Camera) ::Camera::cfg = ::Camera::Config{};
+         if(all||target==ResetTarget::Cooldowns){
+             ::CooldownWindow::cfg = ::CooldownWindow::Config{};
+--- a/features/config.h
++++ b/features/config.h
+@@ -430,7 +430,7 @@
+ {
+     bool Save();
+     bool Load();
+-    enum class ResetTarget { Visuals, Cooldowns, Combat, Map, Camera, Automation, Overlay, All };
++    enum class ResetTarget { Visuals, Cooldowns, Combat, Map, Camera, Automation, Overlay, All, Environment };
+     void ResetInMemory(ResetTarget target); // Explicitly never saves to disk.
+     void SaveDefault(); // Legacy API; not used by the menu. Still resets then saves.
+ }
+--- a/ui/menu.cpp
++++ b/ui/menu.cpp
+@@ -1,3 +1,4 @@
++#include "../features/world_environment.h"
+ #include "../features/auto_laugh.h"
+ #include "../features/death_camera.h"
+ #include "../features/status_overlay.h"
+@@ -245,7 +246,7 @@
+             const bool all=s_resetTarget==Config::ResetTarget::All;
+             ImGui::PushTextWrapPos(ImGui::GetCursorPosX()+fminf(S(390.f),fmaxf(S(100.f),ImGui::GetIO().DisplaySize.x-S(60.f))));
+             ImGui::TextWrapped("Reset: %s",s_resetName);ImGui::Separator();
+-            if(all)ImGui::TextWrapped("Resets Visuals, Cooldowns, Combat, Map, Camera, Automation, HUD/death-camera settings and menu appearance to defaults. Applied skins and diagnostic recordings are not reset.");
++            if(all)ImGui::TextWrapped("Resets Visuals, Cooldowns, Combat, Map, Environment, Camera, Automation, HUD/death-camera settings and menu appearance to defaults. Applied skins and diagnostic recordings are not reset.");
+             else ImGui::TextWrapped("Only this settings group will return to defaults. Other sections and menu appearance are kept.");
+             ImGui::TextWrapped("The saved profile is NOT overwritten. To keep the reset, press Save separately. Load restores the saved profile.");
+             ImGui::PopTextWrapPos();ImGui::Spacing();
+@@ -270,7 +271,7 @@
+         case Page::Visuals:target=s_section[0]==3?Config::ResetTarget::Camera:Config::ResetTarget::Visuals;name=s_section[0]==3?"Camera settings":"Visuals settings (all Visuals tabs except Camera)";break;
+         case Page::CooldownHub:target=Config::ResetTarget::Cooldowns;name="Cooldown Hub settings (all tabs)";break;
+         case Page::Combat:target=Config::ResetTarget::Combat;name="Combat settings (all tabs)";break;
+-        case Page::Radar:target=Config::ResetTarget::Map;name="Map settings";break;
++        case Page::Radar:target=s_section[3]==1?Config::ResetTarget::Environment:Config::ResetTarget::Map;name=s_section[3]==1?"World / Environment (night look)":"Map filters";break;
+         case Page::Settings:
+             if(s_section[5]==1){target=Config::ResetTarget::Automation;name="Automation (Auto Dagger, Auto Pick and Auto Laugh)";}
+             if(s_section[5]==3){target=Config::ResetTarget::Overlay;name="Overlay (FPS, Ping, spectators and death camera)";}
+@@ -519,6 +520,7 @@
+ 
+     static void DrawRadarPage()
+     {
++        if(s_section[3]==1){WorldEnvironment::DrawSettings();return;}
+         UITheme::FeatureMaster(UITheme::Icon::MapHack, "Map Hack", nullptr, &MapHack::cfg.Enabled);
+ 
+         if (!MapHack::cfg.Enabled) ImGui::BeginDisabled();
+@@ -664,9 +666,9 @@
+         }
+         ImGui::Dummy({0.f,S(22.f)});
+         const char* visual[]={"Players","Details","Colors","Camera"};const char* cooldown[]={"Display","Slots"};
+-        const char* combat[]={"Targeting","Ballistics","Overlay"};const char* map[]={"Filters"};const char* skins[]={"Loadout"};
++        const char* combat[]={"Targeting","Ballistics","Overlay"};const char* map[]={"Filters","World"};const char* skins[]={"Loadout"};
+         const char* settings[]={"Appearance","Automation","Profiles","Overlay"};const char* const* labels=visual;int count=4;
+-        switch(s_page){case Page::CooldownHub:labels=cooldown;count=2;break;case Page::Combat:labels=combat;count=3;break;case Page::Radar:labels=map;count=1;break;case Page::Skins:labels=skins;count=1;break;case Page::Settings:labels=settings;count=4;break;default:break;}
++        switch(s_page){case Page::CooldownHub:labels=cooldown;count=2;break;case Page::Combat:labels=combat;count=3;break;case Page::Radar:labels=map;count=2;break;case Page::Skins:labels=skins;count=1;break;case Page::Settings:labels=settings;count=4;break;default:break;}
+         int& selected=s_section[static_cast<int>(s_page)];
+         const ImVec2 start=ImGui::GetCursorScreenPos();const float avail=ImGui::GetContentRegionAvail().x;
+         const float h=fmaxf(S(38.f),ImGui::GetTextLineHeight()+S(16.f)),gap=S(4.f),pad=S(5.f);
+@@ -755,6 +757,7 @@
+         Performance::Scope uiTiming(Performance::Part::UI);
+         if (!IsOpen) Performance::DrawOverlay();
+         AutoLaugh::Service(IsOpen || ImGui::GetIO().WantTextInput);
++        WorldEnvironment::Service();
+         DeathCamera::Service();
+         StatusOverlay::Service();
+         StatusOverlay::Draw();

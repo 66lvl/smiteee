@@ -1,0 +1,160 @@
+﻿Сборка начата 13.11.2026 21:32:29.
+Уровень детализации журнала: Normal.
+     1>Проект "C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj" в узле 1 (целевые объекты Rebuild).
+     1>_PrepareForClean:
+         Файл "C:\Users\lasvj\Desktop\update traine\Smite_Internal222\x64\Release\obj\Trainer.tlog\Trainer.lastbuildstate" удаляется.
+       PrepareForBuild:
+         Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+       InitializeBuildStatus:
+         Обращение к "C:\Users\lasvj\Desktop\update traine\Smite_Internal222\x64\Release\obj\Trainer.tlog\unsuccessfulbuild".
+       ClCompile:
+         C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.44.35207\bin\HostX86\x64\CL.exe /c /I"C:\Users\lasvj\Desktop\update traine\Smite_Internal222\\" /I"C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core" /I"C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features" /I"C:\Users\lasvj\Desktop\update traine\Smite_Internal222\ui" /I"C:\Users\lasvj\Desktop\update traine\Smite_Internal222\imgui" /I"C:\Users\lasvj\Desktop\update traine\Smite_Internal222\minhook" /I"C:\Users\lasvj\Desktop\update traine\Smite_Internal222\CppSDK" /I"C:\Users\lasvj\Desktop\update traine\Smite_Internal222\CppSDK\SDK" /I"C:\Users\lasvj\Desktop\update traine\Smite_Internal222\resources" /Zi /nologo /W3 /WX- /diagnostics:column /sdl- /MP /O2 /Oi /GL /D NDEBUG /D TRAINER_EXPORTS /D _WINDOWS /D _USRDLL /D NOMINMAX /D _WINDLL /D _UNICODE /D UNICODE /Gm- /EHa /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /permissive- /Fo"C:\Users\lasvj\Desktop\update traine\Smite_Internal222\x64\Release\obj\\" /Fd"C:\Users\lasvj\Desktop\update traine\Smite_Internal222\x64\Release\obj\vc143.pdb" /external:W3 /Gd /TP /FC /errorReport:queue /FS core\bones.cpp core\dll_main.cpp core\gamepad_input.cpp core\game_state.cpp core\hooks.cpp core\pawn_filter.cpp core\render_backend.cpp core\renderer.cpp core\renderer_dx11.cpp core\sdk_helpers.cpp features\ability_cd_ui.cpp features\ability_icons.cpp features\aimbot.cpp features\auto_dagger.cpp features\night_sky.cpp features\sky_inspector.cpp features\time_dilation.cpp features\world_environment.cpp features\auto_laugh.cpp features\auto_pick.cpp features\death_camera.cpp features\status_overlay.cpp features\camera.cpp features\config.cpp features\cooldown_window.cpp features\esp.cpp features\esp_cooldown_seh.cpp features\icon_fetch.cpp features\maphack.cpp features\skin_changer.cpp features\skin_changer_seh.cpp ui\menu.cpp ui\theme.cpp imgui\imgui.cpp imgui\imgui_draw.cpp imgui\imgui_tables.cpp imgui\imgui_widgets.cpp imgui\imgui_impl_win32.cpp imgui\imgui_impl_dx11.cpp imgui\imgui_impl_dx12.cpp CppSDK\SDK\Basic.cpp CppSDK\SDK\CoreUObject_functions.cpp CppSDK\SDK\Engine_functions.cpp CppSDK\SDK\BanPickDraftCommon_functions.cpp CppSDK\SDK\Hemingway_functions.cpp CppSDK\SDK\GameplayAbilities_functions.cpp
+         bones.cpp
+         dll_main.cpp
+         gamepad_input.cpp
+         game_state.cpp
+         hooks.cpp
+         pawn_filter.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core\dll_main.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core\bones.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         render_backend.cpp
+         renderer.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core\gamepad_input.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         renderer_dx11.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core\game_state.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         sdk_helpers.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core\hooks.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         ability_cd_ui.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core\pawn_filter.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         ability_icons.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core\render_backend.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         aimbot.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core\renderer.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         auto_dagger.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core\renderer_dx11.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         night_sky.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core\sdk_helpers.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         sky_inspector.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\ability_cd_ui.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         time_dilation.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\ability_icons.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         world_environment.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\aimbot.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         auto_laugh.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\auto_dagger.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         auto_pick.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\night_sky.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         death_camera.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\sky_inspector.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         status_overlay.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\time_dilation.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         camera.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\world_environment.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         config.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\auto_laugh.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         cooldown_window.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\auto_pick.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         esp.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\death_camera.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         esp_cooldown_seh.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\status_overlay.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         icon_fetch.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\camera.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         maphack.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\config.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         skin_changer.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\cooldown_window.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         skin_changer_seh.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\esp.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         menu.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\esp_cooldown_seh.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         theme.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\icon_fetch.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         imgui.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\maphack.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         imgui_draw.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\skin_changer.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         imgui_tables.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\skin_changer_seh.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         imgui_widgets.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\ui\menu.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         imgui_impl_win32.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\ui\theme.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         imgui_impl_dx11.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\imgui\imgui.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         imgui_impl_dx12.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\imgui\imgui_draw.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         Basic.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\imgui\imgui_tables.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         CoreUObject_functions.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\imgui\imgui_widgets.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         Engine_functions.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\imgui\imgui_impl_win32.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         BanPickDraftCommon_functions.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\imgui\imgui_impl_dx11.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         Hemingway_functions.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\imgui\imgui_impl_dx12.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         GameplayAbilities_functions.cpp
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\CppSDK\SDK\Basic.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\CppSDK\SDK\CoreUObject_functions.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\CppSDK\SDK\Engine_functions.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\CppSDK\SDK\BanPickDraftCommon_functions.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\CppSDK\SDK\Hemingway_functions.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+     1>C:\Users\lasvj\Desktop\update traine\Smite_Internal222\CppSDK\SDK\GameplayAbilities_functions.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+     1>Сборка проекта "C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj" завершена (целевые объекты Rebuild) с ошибкой.
+
+Ошибка сборки.
+
+       "C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj" (целевой объект Rebuild ) (1) ->
+       (Целевой объект ClCompile) -> 
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core\dll_main.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core\bones.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core\gamepad_input.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core\game_state.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core\hooks.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core\pawn_filter.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core\render_backend.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core\renderer.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core\renderer_dx11.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\core\sdk_helpers.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\ability_cd_ui.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\ability_icons.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\aimbot.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\auto_dagger.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\night_sky.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\sky_inspector.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\time_dilation.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\world_environment.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\auto_laugh.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\auto_pick.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\death_camera.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\status_overlay.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\camera.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\config.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\cooldown_window.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\esp.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\esp_cooldown_seh.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\icon_fetch.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\maphack.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\skin_changer.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\features\skin_changer_seh.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\ui\menu.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\ui\theme.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\imgui\imgui.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\imgui\imgui_draw.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\imgui\imgui_tables.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\imgui\imgui_widgets.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\imgui\imgui_impl_win32.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\imgui\imgui_impl_dx11.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\imgui\imgui_impl_dx12.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\CppSDK\SDK\Basic.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\CppSDK\SDK\CoreUObject_functions.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\CppSDK\SDK\Engine_functions.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\CppSDK\SDK\BanPickDraftCommon_functions.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\CppSDK\SDK\Hemingway_functions.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+         C:\Users\lasvj\Desktop\update traine\Smite_Internal222\CppSDK\SDK\GameplayAbilities_functions.cpp(1,1): error C1902: Несоответствие диспетчера базы данных программы; проверьте установленную копию [C:\Users\lasvj\Desktop\update traine\Smite_Internal222\Trainer.vcxproj]
+
+    Предупреждений: 0
+    Ошибок: 46
+
+Прошло времени 00:01:13.47

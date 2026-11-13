@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}</ProjectGuid>
+    <RootNamespace>Trainer</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(ProjectDir)x64\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)x64\$(Configuration)\obj\</IntDir>
+    <TargetName>Trainer</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(ProjectDir)x64\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)x64\$(Configuration)\obj\</IntDir>
+    <TargetName>Trainer</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;TRAINER_EXPORTS;_WINDOWS;_USRDLL;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)core;$(ProjectDir)features;$(ProjectDir)ui;$(ProjectDir)imgui;$(ProjectDir)minhook;$(ProjectDir)CppSDK;$(ProjectDir)CppSDK\SDK;$(ProjectDir)resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(ProjectDir)minhook;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;d3d12.lib;dxgi.lib;xinput9_1_0.lib;windowscodecs.lib;winhttp.lib;shell32.lib;comctl32.lib;ole32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;TRAINER_EXPORTS;_WINDOWS;_USRDLL;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)core;$(ProjectDir)features;$(ProjectDir)ui;$(ProjectDir)imgui;$(ProjectDir)minhook;$(ProjectDir)CppSDK;$(ProjectDir)CppSDK\SDK;$(ProjectDir)resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(ProjectDir)minhook;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;d3d12.lib;dxgi.lib;xinput9_1_0.lib;windowscodecs.lib;winhttp.lib;shell32.lib;comctl32.lib;ole32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="core\pch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="core\bones.cpp" />
+    <ClCompile Include="core\dll_main.cpp" />
+    <ClCompile Include="core\gamepad_input.cpp" />
+    <ClCompile Include="core\game_state.cpp" />
+    <ClCompile Include="core\hooks.cpp" />
+    <ClCompile Include="core\pawn_filter.cpp" />
+    <ClCompile Include="core\render_backend.cpp" />
+    <ClCompile Include="core\renderer.cpp" />
+    <ClCompile Include="core\renderer_dx11.cpp" />
+    <ClCompile Include="core\sdk_helpers.cpp" />
+    <ClCompile Include="features\ability_cd_ui.cpp" />
+    <ClCompile Include="features\ability_icons.cpp" />
+    <ClCompile Include="features\aimbot.cpp" />
+    <ClCompile Include="features\auto_dagger.cpp" />
+    <ClCompile Include="features\night_sky.cpp" />
+    <ClCompile Include="features\sky_inspector.cpp" />
+    <ClCompile Include="features\time_dilation.cpp" />
+    <ClCompile Include="features\world_environment.cpp" />
+    <ClCompile Include="features\auto_laugh.cpp" />
+    <ClCompile Include="features\auto_pick.cpp" />
+    <ClCompile Include="features\death_camera.cpp" />
+    <ClCompile Include="features\status_overlay.cpp" />
+    <ClCompile Include="features\camera.cpp" />
+    <ClCompile Include="features\config.cpp" />
+    <ClCompile Include="features\cooldown_window.cpp" />
+    <ClCompile Include="features\esp.cpp" />
+    <ClCompile Include="features\esp_cooldown_seh.cpp" />
+    <ClCompile Include="features\icon_fetch.cpp" />
+    <ClCompile Include="features\maphack.cpp" />
+    <ClCompile Include="features\skin_changer.cpp" />
+    <ClCompile Include="features\skin_changer_seh.cpp" />
+    <ClCompile Include="ui\menu.cpp" />
+    <ClCompile Include="ui\theme.cpp" />
+    <ClCompile Include="imgui\imgui.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_draw.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_tables.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_widgets.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_win32.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_dx11.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_dx12.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="CppSDK\SDK\Basic.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="CppSDK\SDK\CoreUObject_functions.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="CppSDK\SDK\Engine_functions.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="CppSDK\SDK\BanPickDraftCommon_functions.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="CppSDK\SDK\Hemingway_functions.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="CppSDK\SDK\GameplayAbilities_functions.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="core\pch.h" />
+    <ClInclude Include="core\smite_sdk.h" />
+    <ClInclude Include="core\bones.h" />
+    <ClInclude Include="core\game_state.h" />
+    <ClInclude Include="core\gamepad_input.h" />
+    <ClInclude Include="core\performance.h" />
+    <ClInclude Include="core\hooks.h" />
+    <ClInclude Include="core\pawn_filter.h" />
+    <ClInclude Include="core\render_backend.h" />
+    <ClInclude Include="core\renderer.h" />
+    <ClInclude Include="core\renderer_dx11.h" />
+    <ClInclude Include="core\sdk_helpers.h" />
+    <ClInclude Include="features\ability_cd_ui.h" />
+    <ClInclude Include="features\ability_icons.h" />
+    <ClInclude Include="features\aimbot.h" />
+    <ClInclude Include="features\auto_dagger.h" />
+    <ClInclude Include="features\night_sky.h" />
+    <ClInclude Include="features\sky_inspector.h" />
+    <ClInclude Include="features\time_dilation.h" />
+    <ClInclude Include="features\time_dilation_logic.h" />
+    <ClInclude Include="features\world_environment.h" />
+    <ClInclude Include="features\world_environment_logic.h" />
+    <ClInclude Include="features\auto_laugh.h" />
+    <ClInclude Include="features\auto_laugh_logic.h" />
+    <ClInclude Include="features\auto_pick.h" />
+    <ClInclude Include="features\death_camera.h" />
+    <ClInclude Include="features\status_overlay.h" />
+    <ClInclude Include="features\auto_dagger_logic.h" />
+    <ClInclude Include="features\camera.h" />
+    <ClInclude Include="features\config.h" />
+    <ClInclude Include="features\cooldown_window.h" />
+    <ClInclude Include="features\esp.h" />
+    <ClInclude Include="features\esp_cooldown_seh.h" />
+    <ClInclude Include="features\icon_fetch.h" />
+    <ClInclude Include="features\maphack.h" />
+    <ClInclude Include="features\skin_changer.h" />
+    <ClInclude Include="features\skin_changer_seh.h" />
+    <ClInclude Include="ui\menu.h" />
+    <ClInclude Include="ui\theme.h" />
+    <ClInclude Include="imgui\imgui.h" />
+    <ClInclude Include="imgui\imconfig.h" />
+    <ClInclude Include="imgui\imgui_internal.h" />
+    <ClInclude Include="imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="imgui\imgui_impl_dx12.h" />
+    <ClInclude Include="imgui\imgui_impl_win32.h" />
+    <ClInclude Include="minhook\MinHook.h" />
+    <ClInclude Include="resources\resource.h" />
+    <ClInclude Include="CppSDK\SDK.hpp" />
+    <ClInclude Include="CppSDK\PropertyFixup.hpp" />
+    <ClInclude Include="CppSDK\UnrealContainers.hpp" />
+    <ClInclude Include="CppSDK\UtfN.hpp" />
+    <ClInclude Include="CppSDK\NameCollisions.inl" />
+    <ClInclude Include="CppSDK\SDK\Basic.hpp" />
+    <ClInclude Include="CppSDK\SDK\CoreUObject_classes.hpp" />
+    <ClInclude Include="CppSDK\SDK\CoreUObject_structs.hpp" />
+    <ClInclude Include="CppSDK\SDK\Engine_classes.hpp" />
+    <ClInclude Include="CppSDK\SDK\Engine_structs.hpp" />
+    <ClInclude Include="CppSDK\SDK\Hemingway_classes.hpp" />
+    <ClInclude Include="CppSDK\SDK\Hemingway_structs.hpp" />
+  </ItemGroup>
+  <!-- Build MinHook from source with the same selected MSVC as Trainer. -->
+  <ItemGroup>
+    <ClCompile Include="minhook\src\buffer.c">
+      <CompileAs>CompileAsC</CompileAs>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <LanguageStandard>Default</LanguageStandard>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="minhook\src\hook.c">
+      <CompileAs>CompileAsC</CompileAs>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <LanguageStandard>Default</LanguageStandard>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="minhook\src\trampoline.c">
+      <CompileAs>CompileAsC</CompileAs>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <LanguageStandard>Default</LanguageStandard>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="minhook\src\hde\hde64.c">
+      <CompileAs>CompileAsC</CompileAs>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <LanguageStandard>Default</LanguageStandard>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles></ForcedIncludeFiles>
+    </ClCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

@@ -1,0 +1,330 @@
+--- original/Trainer.vcxproj
++++ patched/Trainer.vcxproj
+@@ -111,6 +111,7 @@
+     <ClCompile Include="features\auto_dagger.cpp" />
+     <ClCompile Include="features\night_sky.cpp" />
+     <ClCompile Include="features\sky_inspector.cpp" />
++    <ClCompile Include="features\time_dilation.cpp" />
+     <ClCompile Include="features\world_environment.cpp" />
+     <ClCompile Include="features\auto_laugh.cpp" />
+     <ClCompile Include="features\auto_pick.cpp" />
+@@ -158,6 +159,8 @@
+     <ClInclude Include="features\auto_dagger.h" />
+     <ClInclude Include="features\night_sky.h" />
+     <ClInclude Include="features\sky_inspector.h" />
++    <ClInclude Include="features\time_dilation.h" />
++    <ClInclude Include="features\time_dilation_logic.h" />
+     <ClInclude Include="features\world_environment.h" />
+     <ClInclude Include="features\world_environment_logic.h" />
+     <ClInclude Include="features\auto_laugh.h" />
+--- original/Trainer.vcxproj.filters
++++ patched/Trainer.vcxproj.filters
+@@ -123,4 +123,9 @@
+     <ClInclude Include="features\world_environment.h"><Filter>features</Filter></ClInclude>
+     <ClInclude Include="features\world_environment_logic.h"><Filter>features</Filter></ClInclude>
+   </ItemGroup>
++  <ItemGroup>
++    <ClCompile Include="features\time_dilation.cpp"><Filter>features</Filter></ClCompile>
++    <ClInclude Include="features\time_dilation.h"><Filter>features</Filter></ClInclude>
++    <ClInclude Include="features\time_dilation_logic.h"><Filter>features</Filter></ClInclude>
++  </ItemGroup>
+ </Project>
+--- original/core/dll_main.cpp
++++ patched/core/dll_main.cpp
+@@ -67,7 +67,7 @@
+                 const bool cameraReady=DeathCamera::PrepareUnload();
+                 if(environmentReady&&cameraReady)break;
+                 WorldEnvironment::CancelUnload();
+-                if(!environmentReady)printf("[!] Environment restore pending. Disable night look and return to gameplay before END.\n");
++                if(!environmentReady)printf("[!] Environment restore pending. Disable environment/time effects and return to gameplay before END.\n");
+                 if(!cameraReady)printf("[!] Camera restore pending. Use native spectate controls / respawn, then END again.\n");
+             }
+             Sleep(100);
+--- original/features/config.cpp
++++ patched/features/config.cpp
+@@ -1,3 +1,4 @@
++#include "time_dilation.h"
+ #include "world_environment.h"
+ #include "crosshair.h"
+ #include "auto_laugh.h"
+@@ -423,6 +424,7 @@
+     // ---------------------------------------------------------------
+     bool Load()
+     {
++        TimeDilationExperiment::Disable(); // Never carry an experimental time lease across profile loads.
+         std::string path = GetConfigPath();
+         std::string json = ReadFile(path);
+         // A failed Load must not reset settings or overwrite the user's file.
+@@ -675,7 +677,10 @@
+         if(all||target==ResetTarget::Visuals) ::ESP::cfg = ::ESP::Config{};
+         if(all||target==ResetTarget::Combat){::Aimbot::cfg = ::Aimbot::Config{};Aimbot::ResetState();}
+         if(all||target==ResetTarget::Map) ::MapHack::cfg = ::MapHack::Config{};
+-        if(all||target==ResetTarget::Environment) WorldEnvironment::SetConfig(WorldEnvironment::Config{});
++        if(all||target==ResetTarget::Environment){
++            WorldEnvironment::SetConfig(WorldEnvironment::Config{});
++            TimeDilationExperiment::SetConfig(TimeDilationExperiment::Config{});
++        }
+         if(all||target==ResetTarget::Camera) ::Camera::cfg = ::Camera::Config{};
+         if(all||target==ResetTarget::Cooldowns){
+             ::CooldownWindow::cfg = ::CooldownWindow::Config{};
+--- /dev/null
++++ patched/features/time_dilation.cpp
+@@ -0,0 +1,161 @@
++#include "time_dilation.h"
++#include "time_dilation_logic.h"
++#include "../core/sdk_helpers.h"
++#include "../ui/theme.h"
++#include <atomic>
++#include <mutex>
++
++namespace TimeDilationExperiment
++{
++    namespace
++    {
++        std::mutex s_mutex;
++        Config s_config{};
++        std::atomic_bool s_enabled{false},s_pending{false};
++        const char* s_status="Disabled. Experimental client-local world time only.";
++        float s_baseline=0.f,s_requested=0.f,s_observed=0.f;
++        struct Identity
++        {
++            SDK::UObject* Pointer=nullptr;
++            SDK::UClass* Class=nullptr;
++            SDK::UObject* Outer=nullptr;
++            SDK::FName Name{};
++            int Index=-1;
++        };
++        struct Lease
++        {
++            Identity World{},Settings{};
++            float Original=1.f,Written=1.f,Multiplier=1.f;
++        } s_lease; // Window dispatcher only. SDK does not expose registry serials.
++        void Publish(const char* text)
++        { std::lock_guard<std::mutex> lock(s_mutex);s_status=text; }
++        void Sample(float baseline,float requested,float observed)
++        { std::lock_guard<std::mutex> lock(s_mutex);s_baseline=baseline;s_requested=requested;s_observed=observed; }
++        bool Live(SDK::UObject* object)
++        {
++            if(!Helpers::IsValidPtr(object)||!Helpers::IsValidPtr(object->Class))return false;
++            const auto bad=static_cast<unsigned>(SDK::EObjectFlags::ClassDefaultObject)|
++                static_cast<unsigned>(SDK::EObjectFlags::BeginDestroyed)|
++                static_cast<unsigned>(SDK::EObjectFlags::FinishDestroyed)|
++                static_cast<unsigned>(SDK::EObjectFlags::MirroredGarbage);
++            return !(static_cast<unsigned>(object->Flags)&bad);
++        }
++        Identity Capture(SDK::UObject* object)
++        { return {object,object->Class,object->Outer,object->Name,object->Index}; }
++        bool Same(const Identity& key)
++        {
++            // Resolve registry entry BEFORE dereferencing a cached pointer.
++            auto* object=SDK::UObject::GObjects->GetByIndex(key.Index);
++            return object==key.Pointer && Live(object) && object->Class==key.Class &&
++                object->Outer==key.Outer && object->Name==key.Name;
++        }
++        bool Registered(SDK::UObject* object)
++        { return Live(object)&&object->Index>=0&&SDK::UObject::GObjects->GetByIndex(object->Index)==object; }
++        void Forget() { s_pending=false;s_lease=Lease{}; }
++        void Restore()
++        {
++            if(!s_pending.load())return;
++            if(!Same(s_lease.Settings)){Forget();return;}
++            auto* settings=static_cast<SDK::AWorldSettings*>(s_lease.Settings.Pointer);
++            const float current=settings->TimeDilation;
++            Sample(s_lease.Original,s_lease.Written,current);
++            if(!Logic::StillOwned(current,s_lease.Written))
++            {
++                // Never overwrite a newer server/game value or fight replication.
++                Forget();Publish("External value preserved; this module no longer owns the field.");return;
++            }
++            settings->TimeDilation=s_lease.Original;
++            if(settings->TimeDilation!=s_lease.Original)
++            { Publish("Restore not confirmed locally. Keep DLL loaded and retry disable.");return; }
++            Sample(s_lease.Original,s_lease.Written,settings->TimeDilation);
++            Forget();
++        }
++        bool Context(SDK::UWorld** outWorld,SDK::AWorldSettings** outSettings)
++        {
++            auto* world=Helpers::GetWorld();auto* rawPC=Helpers::GetLocalPC();
++            if(!Registered(world)||!Live(world->PersistentLevel)||!Live(world->GameState)||
++                !world->GameState->IsA(SDK::AHWGameState::StaticClass()))return false;
++            if(!Live(rawPC)||!rawPC->IsA(SDK::AHWPlayerController_Smite::StaticClass()))return false;
++            auto* pc=static_cast<SDK::AHWPlayerController_Smite*>(rawPC);
++            if(pc->bIsDeathSpectating||!Live(pc->PlayerState)||pc->PlayerState->bIsInactive||pc->PlayerState->bFromPreviousLevel)return false;
++            auto* pawn=pc->Pawn;
++            if(!Live(pawn)||!pawn->IsA(SDK::AHWCharacter_PlayableCharacter::StaticClass())||pawn->Controller!=pc)return false;
++            auto* settings=world->PersistentLevel->WorldSettings;
++            if(!Registered(settings)||!settings->IsA(SDK::AWorldSettings::StaticClass())||settings->Outer!=world->PersistentLevel)return false;
++            *outWorld=world;*outSettings=settings;return true;
++        }
++        void Poll(HWND hwnd,bool suspending)
++        {
++            Config config=GetConfig();
++            if(suspending||!config.Enabled)
++            { Restore();if(!s_pending.load())Publish("Disabled; matching owned value restored or external value preserved.");return; }
++            if(GetForegroundWindow()!=hwnd)
++            { Disable();Restore();Publish("Disabled on focus loss; re-enable explicitly when ready.");return; }
++            SDK::UWorld* world=nullptr;SDK::AWorldSettings* settings=nullptr;
++            if(!Context(&world,&settings))
++            { Disable();Restore();Publish("Disabled: owned playable pawn and valid WorldSettings required (not lobby/spectating).");return; }
++            if(s_pending.load())
++            {
++                if(world!=s_lease.World.Pointer||!Same(s_lease.World)||settings!=s_lease.Settings.Pointer||!Same(s_lease.Settings))
++                { Disable();Restore();Publish("World/settings changed; disabled. Re-enable manually in the new world.");return; }
++                const float current=settings->TimeDilation;
++                Sample(s_lease.Original,s_lease.Written,current);
++                if(!Logic::StillOwned(current,s_lease.Written))
++                { Disable();Forget();Publish("Game/server replaced the local value; disabled without reapplying.");return; }
++                if(config.Multiplier==s_lease.Multiplier)return;
++                Restore();if(s_pending.load())return;
++            }
++            if(config.Multiplier<=1.f)
++            { Publish("Multiplier 1.00: original world time, no write.");return; }
++            const float baseline=settings->TimeDilation;
++            float desired=baseline;
++            if(!Logic::Desired(baseline,config.Multiplier,settings->MinGlobalTimeDilation,settings->MaxGlobalTimeDilation,&desired))
++            { Disable();Publish("Disabled: invalid time value or SDK world limits.");return; }
++            Sample(baseline,desired,baseline);
++            if(desired==baseline){Publish("No write: world limits leave the value unchanged.");return;}
++            // Recheck current context and baseline immediately before writing. Not atomic with UE.
++            if(Helpers::GetWorld()!=world||world->PersistentLevel->WorldSettings!=settings||settings->TimeDilation!=baseline)
++            { Disable();Publish("Context/value changed before write; disabled.");return; }
++            s_lease={Capture(world),Capture(settings),baseline,desired,config.Multiplier};
++            s_pending=true; // Mark before writing so a partial failure retains restore work.
++            settings->TimeDilation=desired;
++            Sample(baseline,desired,settings->TimeDilation);
++            if(!Logic::StillOwned(settings->TimeDilation,desired))
++            { Disable();Restore();Publish("Write not retained locally; disabled.");return; }
++            Publish("Local field applied. NOT proof of faster server movement or attacks.");
++        }
++    }
++    Config GetConfig(){std::lock_guard<std::mutex> lock(s_mutex);return s_config;}
++    void SetConfig(const Config& value)
++    {
++        Config next=value;next.Multiplier=Logic::Multiplier(next.Multiplier);
++        std::lock_guard<std::mutex> lock(s_mutex);s_config=next;s_enabled=next.Enabled;
++    }
++    void Disable(){std::lock_guard<std::mutex> lock(s_mutex);s_config.Enabled=false;s_enabled=false;}
++    bool NeedsService(){return s_enabled.load()||s_pending.load();}
++    bool HasPendingRestore(){return s_pending.load();}
++    void TickOnWindowThread(HWND hwnd,bool suspending)
++    {
++        if(!NeedsService())return;
++        __try { Poll(hwnd,suspending); }
++        __except(EXCEPTION_EXECUTE_HANDLER)
++        { Disable();Publish("SDK access fault. Disabled; restore remains pending if owned. Do not force unload."); }
++    }
++    void DrawPanel()
++    {
++        Config config=GetConfig();bool changed=false;
++        UITheme::BeginCard("time_dilation_experiment",UITheme::Icon::Visuals,"Experimental / Client world time");
++        changed|=UITheme::CheckboxRow("Enable experimental time dilation",&config.Enabled);
++        changed|=UITheme::SliderFloatRow("Time multiplier",&config.Multiplier,1.f,1.5f,"%.2fx");
++        if(ImGui::Button("Disable and restore")){config.Enabled=false;changed=true;}
++        if(changed)SetConfig(config);
++        const char* status;float baseline,requested,observed;
++        {std::lock_guard<std::mutex> lock(s_mutex);status=s_status;baseline=s_baseline;requested=s_requested;observed=s_observed;}
++        ImGui::TextWrapped("Status: %s",status);
++        ImGui::Text("Last local sample: original=%.3f requested=%.3f observed=%.3f",baseline,requested,observed);
++        ImGui::Text("Pending owned field: %s",HasPendingRestore()?"YES":"NO");
++        UITheme::InfoText("Client-side WorldSettings.TimeDilation only. No RPC, driver, packet manipulation or server acknowledgement. This may affect animations/timing without faster movement or damage.");
++        UITheme::InfoText("Defaults OFF and is not saved to profiles. Disables on focus loss, invalid gameplay context, world change or external replacement. Restore never overwrites a newer game value. Test in practice first.");
++        UITheme::EndCard();
++    }
++}
+--- /dev/null
++++ patched/features/time_dilation.h
+@@ -0,0 +1,15 @@
++#pragma once
++#include <Windows.h>
++namespace TimeDilationExperiment
++{
++    struct Config { bool Enabled=false; float Multiplier=1.1f; };
++    Config GetConfig();
++    void SetConfig(const Config& value);
++    void Disable();
++    bool NeedsService();
++    bool HasPendingRestore();
++    // Called by the existing WorldEnvironment window-message dispatcher.
++    // Window thread affinity is checked there; it is not proof of UE game-thread affinity.
++    void TickOnWindowThread(HWND hwnd, bool suspending);
++    void DrawPanel();
++}
+--- /dev/null
++++ patched/features/time_dilation_logic.h
+@@ -0,0 +1,22 @@
++#pragma once
++#include <cmath>
++namespace TimeDilationExperiment::Logic
++{
++    inline float Multiplier(float value)
++    {
++        if (!std::isfinite(value)) return 1.f;
++        return value < 1.f ? 1.f : (value > 1.5f ? 1.5f : value);
++    }
++    inline bool Desired(float baseline, float multiplier, float minimum, float maximum, float* result)
++    {
++        if (!result || !std::isfinite(baseline) || baseline <= 0.f ||
++            !std::isfinite(minimum) || !std::isfinite(maximum) || minimum <= 0.f || maximum < minimum)
++            return false;
++        const float value = baseline * Multiplier(multiplier);
++        if (!std::isfinite(value)) return false;
++        *result = value < minimum ? minimum : (value > maximum ? maximum : value);
++        return true;
++    }
++    inline bool StillOwned(float current, float written)
++    { return std::isfinite(current) && current == written; }
++}
+--- original/features/world_environment.cpp
++++ patched/features/world_environment.cpp
+@@ -1,3 +1,4 @@
++#include "time_dilation.h"
+ #include "world_environment.h"
+ #include "sky_inspector.h"
+ #include "night_sky.h"
+@@ -168,7 +169,7 @@
+     }
+     void Service()
+     {
+-        if(s_stopping.load()||(!s_enabled.load()&&!s_active.load()&&!SkyInspector::Pending()&&!NightSky::NeedsService()))return;
++        if(s_stopping.load()||(!s_enabled.load()&&!s_active.load()&&!SkyInspector::Pending()&&!NightSky::NeedsService()&&!TimeDilationExperiment::NeedsService()))return;
+         HWND hwnd=Hooks::g_hWnd;if(!hwnd||!IsWindow(hwnd))return;
+         const auto now=GetTickCount64();if(s_window.load()==hwnd&&now-s_lastTick.load()<2000)return;
+         if(now-s_lastPost<500)return;s_lastPost=now;
+@@ -187,8 +188,9 @@
+                 if(isSetup){auto* old=s_window.load();if(old&&old!=hwnd)KillTimer(old,TimerId);if(SetTimer(hwnd,TimerId,100,nullptr))s_window=hwnd;else Publish("Environment timer unavailable");}
+                 if(!s_suspend.load())SkyInspector::ProcessOnWindowThread();
+                 NightSky::TickOnWindowThread(hwnd,s_suspend.load());
++                TimeDilationExperiment::TickOnWindowThread(hwnd,s_suspend.load());
+                 PollSafe(hwnd);s_lastTick=GetTickCount64();
+-                if(!s_enabled.load()&&!s_active.load()&&!SkyInspector::Pending()&&!NightSky::NeedsService()){KillTimer(hwnd,TimerId);s_window=nullptr;}
++                if(!s_enabled.load()&&!s_active.load()&&!SkyInspector::Pending()&&!NightSky::NeedsService()&&!TimeDilationExperiment::NeedsService()){KillTimer(hwnd,TimerId);s_window=nullptr;}
+             }
+         }
+         --s_calls;handling=false;return true; // Never consumes mouse/keyboard or changes input capture.
+@@ -196,14 +198,14 @@
+     bool PrepareUnload()
+     {
+         {
+-            std::lock_guard<std::mutex> dispatch(s_dispatch);s_suspend=true;SkyInspector::CancelPending();NightSky::Disable();
++            std::lock_guard<std::mutex> dispatch(s_dispatch);s_suspend=true;SkyInspector::CancelPending();NightSky::Disable();TimeDilationExperiment::Disable();
+             auto config=GetConfig();config.NightEnabled=false;SetConfig(config);
+         }
+-        if(!s_active.load()&&!NightSky::HasPendingRestore())return true;
++        if(!s_active.load()&&!NightSky::HasPendingRestore()&&!TimeDilationExperiment::HasPendingRestore())return true;
+         const UINT setup=s_setup.load();HWND hwnd=s_window.load();if(!hwnd)hwnd=Hooks::g_hWnd;
+         if(hwnd&&setup)PostMessageW(hwnd,setup,0,0);
+-        for(int i=0;i<100&&(s_active.load()||NightSky::HasPendingRestore());i++)Sleep(10);
+-        if(s_active.load()||NightSky::HasPendingRestore()){Publish("Unload refused: camera or sky lighting restore pending; disable and return to gameplay");s_suspend=false;return false;}
++        for(int i=0;i<100&&(s_active.load()||NightSky::HasPendingRestore()||TimeDilationExperiment::HasPendingRestore());i++)Sleep(10);
++        if(s_active.load()||NightSky::HasPendingRestore()||TimeDilationExperiment::HasPendingRestore()){Publish("Unload refused: camera, sky or world time restore pending; disable and return to gameplay");s_suspend=false;return false;}
+         return true;
+     }
+     void CancelUnload(){if(!s_stopping.load())s_suspend=false;}
+@@ -230,6 +232,7 @@
+         UITheme::InfoText("Own gameplay camera only. Pauses for spectating, camera blends and focus loss. If the game replaces grading, the effect yields rather than fighting it.");
+         UITheme::InfoText("This is camera color grading, not actual map lighting. Rain is not included: world particles need a verified effect asset and indoor occlusion.");
+         UITheme::EndCard();
++        TimeDilationExperiment::DrawPanel();
+         NightSky::DrawPanel();
+         SkyInspector::DrawPanel();
+     }

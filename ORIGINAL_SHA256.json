@@ -1,0 +1,7 @@
+{
+  "Trainer.vcxproj": "76245c2367aa29bee027f33a0081aa3c85d63cc08ae5dc20f866ed9bcebb8b94",
+  "Trainer.vcxproj.filters": "6f7a8b101d91f0c0994442b64dca70a32f518e8d8c61fdd73196ef1231ccd860",
+  "core/dll_main.cpp": "cec3c248e5ae99be1f1507a09357b14ecd0d31c0532cbddac2d128d3d007da10",
+  "features/config.cpp": "966d1e289fc504826409619e5a2b0c4bcf36a59b89d1c93b0921a4c58d6dcce6",
+  "features/world_environment.cpp": "09b4a381b16eef725f72bba330caa45149c8733be7fbd2055cf3ddf497b69436"
+}
